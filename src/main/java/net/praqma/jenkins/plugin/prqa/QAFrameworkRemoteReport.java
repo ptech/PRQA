@@ -97,36 +97,36 @@ public class QAFrameworkRemoteReport implements FileCallable<PRQAComplianceStatu
 
             if (reportSetting.isPullUnifiedProject()) {
                 CmdResult pullUnifyProject = report.pullUnifyProjectQacli(isUnix, out);
-                logCmdResult(pullUnifyProject, out);
+                //logCmdResult(pullUnifyProject, out);
             }
 
             CmdResult analyzeResult = report.analyzeQacli(isUnix, "-cf", out);
-            logCmdResult(analyzeResult, out);
+            //logCmdResult(analyzeResult, out);
 
             if (reportSetting.isQaCrossModuleAnalysis()) {
                 CmdResult cmaAnalysisResult = report.cmaAnalysisQacli(isUnix, out);
-                logCmdResult(cmaAnalysisResult, out);
+               //logCmdResult(cmaAnalysisResult, out);
             }
 
             if (reportSetting.isGenCrReport()) {
                 String Report = "CRR";
                 CmdResult crrGenerationResult = report.reportQacli(isUnix, Report, out);
-                logCmdResult(crrGenerationResult, out);
+                //logCmdResult(crrGenerationResult, out);
             }
             if (reportSetting.isGenMdReport()) {
                 String Report = "MDR";
                 CmdResult mdrGenerationResult = report.reportQacli(isUnix, Report, out);
-                logCmdResult(mdrGenerationResult, out);
+                //logCmdResult(mdrGenerationResult, out);
             }
             if (reportSetting.isGenSupReport()) {
                 String Report = "SUR";
                 CmdResult srGenerationResult = report.reportQacli(isUnix, Report, out);
-                logCmdResult(srGenerationResult, out);
+                //logCmdResult(srGenerationResult, out);
             }
 
             String Report = "RCR";
             CmdResult rcrGenerationResult = report.reportQacli(isUnix, Report, out);
-            logCmdResult(rcrGenerationResult, out);
+            //logCmdResult(rcrGenerationResult, out);
 
             return report.getComplianceStatus(out);
         } catch (PrqaException exception) {
