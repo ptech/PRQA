@@ -716,8 +716,9 @@ public class PRQANotifier extends Publisher implements Serializable {
             suite = qaFrameworkInstallationConfiguration;
         } else {
             try {
+                build.setResult(Result.FAILURE);
                 throw new PrqaSetupException(String.format(
-                        "The job uses a product configuration (%s) that no longer exists, please reconfigure.", ""));
+                        "The job uses a product configuration (%s) that no longer exists, please reconfigure.", qaFrameworkPostBuildActionSetup.qaInstallation));
             } catch (PrqaSetupException pex) {
                 outStream.println(pex.getMessage());
                 log.log(Level.WARNING, "PrqaException", pex.getCause());
