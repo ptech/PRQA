@@ -18,6 +18,20 @@
                 </f:entry>
 
                 <f:block>
+                    <f:optionalBlock name="useCustomLicenseServer"
+                                     title="${%Set custom licence server}"
+                                     help="/plugin/prqa-plugin/config/help-configUseCustomLicenseServer.html"
+                                     checked="${instance.useCustomLicenseServer}"
+                                     inline="true">
+                        <f:entry title="${%Licence server address}"
+                                 field="customLicenseServerAddress"
+                                 help="/plugin/prqa-plugin/config/help-configCustomLicenseServerAddress.html">
+                            <f:textbox/>
+                        </f:entry>
+                    </f:optionalBlock>
+                </f:block>
+
+                <f:block>
                     <f:optionalBlock name="loginToQAV" title="${%QA&#xb7;Verify Server Connection}" help="/plugin/prqa-plugin/config/help-configQAVServerConnection.html" checked="${instance.loginToQAV}" inline="true">
                         <j:set var="zervers" value="${descriptor.getServers()}"/>
                         <f:entry title="${%Select server configuration}" help="/plugin/prqa-plugin/config/help-configServerSelect.html" field="chosenServers">

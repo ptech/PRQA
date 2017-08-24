@@ -90,7 +90,11 @@ public class QAFrameworkRemoteReport implements FileCallable<PRQAComplianceStatu
          *
          * We skip the analysis phase
          */
+        boolean customServerWasApplied = false;
         try {
+
+            customServerWasApplied = report.applyCustomLicenseServer(out);
+
             if (StringUtils.isBlank(report.getSettings().getQaInstallation())) {
                 throw new PrqaException("Incorrect configuration!");
             }
@@ -133,6 +137,12 @@ public class QAFrameworkRemoteReport implements FileCallable<PRQAComplianceStatu
             throw new IOException(exception.getMessage(), exception);
         } catch (Exception ex) {
             throw new IOException(ex.getMessage());
+        } finally {
+            try {
+                report.unsetCustomLicenseServer(customServerWasApplied, out);
+            } catch (PrqaException e) {
+                e.printStackTrace(out);
+            }
         }
     }
 

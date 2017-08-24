@@ -47,6 +47,8 @@ public class QAFrameworkPostBuildActionSetup extends PostBuildActionSetup {
     public String qaInstallation;
     public String qaProject;
     public String unifiedProjectName;
+    public final boolean useCustomLicenseServer;
+    public final String customLicenseServerAddress;
     public boolean downloadUnifiedProjectDefinition;
     public boolean performCrossModuleAnalysis;
     public boolean enableDependencyMode;
@@ -68,14 +70,35 @@ public class QAFrameworkPostBuildActionSetup extends PostBuildActionSetup {
     public boolean assembleSupportAnalytics;
 
     @DataBoundConstructor
-    public QAFrameworkPostBuildActionSetup(String qaInstallation, String qaProject, boolean downloadUnifiedProjectDefinition, String unifiedProjectName,
-            boolean performCrossModuleAnalysis, boolean enableDependencyMode,
-            boolean generateReport, boolean publishToQAV, boolean loginToQAV, List<String> chosenServers, boolean uploadWhenStable, String qaVerifyProjectName,
-            String uploadSnapshotName, String buildNumber, String uploadSourceCode, boolean generateCrr, boolean generateMdr, boolean generateSup,
-            boolean analysisSettings, boolean stopWhenFail, boolean generatePreprocess, boolean assembleSupportAnalytics) {
+    public QAFrameworkPostBuildActionSetup(String qaInstallation,
+                                           String qaProject,
+                                           boolean useCustomLicenseServer,
+                                           String customLicenseServerAddress,
+                                           boolean downloadUnifiedProjectDefinition,
+                                           String unifiedProjectName,
+                                           boolean performCrossModuleAnalysis,
+                                           boolean enableDependencyMode,
+                                           boolean generateReport,
+                                           boolean publishToQAV,
+                                           boolean loginToQAV,
+                                           List<String> chosenServers,
+                                           boolean uploadWhenStable,
+                                           String qaVerifyProjectName,
+                                           String uploadSnapshotName,
+                                           String buildNumber,
+                                           String uploadSourceCode,
+                                           boolean generateCrr,
+                                           boolean generateMdr,
+                                           boolean generateSup,
+                                           boolean analysisSettings,
+                                           boolean stopWhenFail,
+                                           boolean generatePreprocess,
+                                           boolean assembleSupportAnalytics) {
 
         this.qaInstallation = qaInstallation;
         this.qaProject = qaProject;
+        this.useCustomLicenseServer = useCustomLicenseServer;
+        this.customLicenseServerAddress = customLicenseServerAddress;
         this.downloadUnifiedProjectDefinition = downloadUnifiedProjectDefinition;
         this.unifiedProjectName = unifiedProjectName;
         this.performCrossModuleAnalysis = performCrossModuleAnalysis;
@@ -285,6 +308,18 @@ public class QAFrameworkPostBuildActionSetup extends PostBuildActionSetup {
         @Override
         public String getDisplayName() {
             return "PRQA·Framework";
+        }
+
+        public FormValidation doCheckCustomLicenseServerAddress(@QueryParameter String customLicenseServerAddress) {
+            final String serverRegex = "^(\\d{1,5})@(.+)$";
+
+            if (StringUtils.isBlank(customLicenseServerAddress)) {
+                return FormValidation.error("Custom license server address must not be empty");
+            } else if (!customLicenseServerAddress.matches(serverRegex)) {
+                return FormValidation.error("License server format must be <port>@<host>");
+            } else {
+                return FormValidation.ok();
+            }
         }
 
         public FormValidation doCheckQAInstallation(@QueryParameter String value) {
