@@ -44,7 +44,8 @@ import net.praqma.util.execute.CmdResult;
 import net.prqma.prqa.qaframework.QaFrameworkReportSettings;
 
 import org.apache.commons.lang.StringUtils;
-import org.jdom2.JDOMException;
+
+import static net.praqma.prqa.reports.ReportType.*;
 
 public class QAFrameworkRemoteReport implements FileCallable<PRQAComplianceStatus> {
 
@@ -106,20 +107,16 @@ public class QAFrameworkRemoteReport implements FileCallable<PRQAComplianceStatu
             }
 
             if (reportSetting.isGenCrReport()) {
-                String Report = "CRR";
-                report.reportQacli(isUnix, Report, out);
+                report.reportQacli(isUnix, CRR.name(), out);
             }
             if (reportSetting.isGenMdReport()) {
-                String Report = "MDR";
-                report.reportQacli(isUnix, Report, out);
+                report.reportQacli(isUnix, MDR.name(), out);
             }
             if (reportSetting.isGenSupReport()) {
-                String Report = "SUR";
-                report.reportQacli(isUnix, Report, out);
+                report.reportQacli(isUnix, SUR.name(), out);
             }
 
-            String Report = "RCR";
-            report.reportQacli(isUnix, Report, out);
+            report.reportQacli(isUnix, RCR.name(), out);
 
             return report.getComplianceStatus(out);
         } catch (PrqaException exception) {
