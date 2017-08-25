@@ -30,7 +30,6 @@ import hudson.remoting.VirtualChannel;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
 
@@ -52,7 +51,7 @@ public class QAFrameworkRemoteReport implements FileCallable<PRQAComplianceStatu
     private static final long serialVersionUID = 1L;
     private QAFrameworkReport report;
     private BuildListener listener;
-    boolean isUnix;
+    private boolean isUnix;
     private QaFrameworkReportSettings reportSetting;
 
     public QAFrameworkRemoteReport(QAFrameworkReport report, BuildListener listener, boolean isUnix) {
@@ -61,8 +60,8 @@ public class QAFrameworkRemoteReport implements FileCallable<PRQAComplianceStatu
         this.isUnix = isUnix;
     }
 
-    private Map<String, String> expandEnvironment(Map<String, String> environment, PRQAApplicationSettings appSettings,
-            QaFrameworkReportSettings reportSetting) {
+    private Map<String, String> expandEnvironment(Map<String, String> environment,
+                                                  QaFrameworkReportSettings reportSetting) {
         this.reportSetting = reportSetting;
         if (environment == null) {
             return Collections.emptyMap();
@@ -76,8 +75,7 @@ public class QAFrameworkRemoteReport implements FileCallable<PRQAComplianceStatu
     @Override
     public PRQAComplianceStatus invoke(File f, VirtualChannel channel) throws IOException, InterruptedException {
 
-        Map<String, String> expandedEnvironment = expandEnvironment(report.getEnvironment(), report.getAppSettings(),
-                report.getSettings());
+        Map<String, String> expandedEnvironment = expandEnvironment(report.getEnvironment(), report.getSettings());
 
         report.setEnvironment(expandedEnvironment);
         report.setWorkspace(f);

@@ -32,7 +32,6 @@ import net.praqma.prqa.products.QACli;
 import net.praqma.prqa.products.QAR;
 import net.praqma.prqa.reports.PRQAReport;
 import net.praqma.prqa.reports.QAFrameworkReport;
-import net.praqma.prqa.reports.ReportType;
 import net.praqma.prqa.status.PRQAComplianceStatus;
 import net.praqma.prqa.status.StatusCategory;
 import net.praqma.util.ExceptionUtils;
