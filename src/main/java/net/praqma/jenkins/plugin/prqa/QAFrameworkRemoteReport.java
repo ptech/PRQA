@@ -44,7 +44,8 @@ import net.praqma.util.execute.CmdResult;
 import net.prqma.prqa.qaframework.QaFrameworkReportSettings;
 
 import org.apache.commons.lang.StringUtils;
-import org.jdom2.JDOMException;
+
+import static net.praqma.prqa.reports.ReportType.*;
 
 public class QAFrameworkRemoteReport implements FileCallable<PRQAComplianceStatus> {
 
@@ -109,23 +110,19 @@ public class QAFrameworkRemoteReport implements FileCallable<PRQAComplianceStatu
             }
 
             if (reportSetting.isGenCrReport()) {
-                String Report = "CRR";
-                CmdResult crrGenerationResult = report.reportQacli(isUnix, Report, out);
+                CmdResult crrGenerationResult = report.reportQacli(isUnix, CRR.name(), out);
                 logCmdResult(crrGenerationResult, out);
             }
             if (reportSetting.isGenMdReport()) {
-                String Report = "MDR";
-                CmdResult mdrGenerationResult = report.reportQacli(isUnix, Report, out);
+                CmdResult mdrGenerationResult = report.reportQacli(isUnix, MDR.name(), out);
                 logCmdResult(mdrGenerationResult, out);
             }
             if (reportSetting.isGenSupReport()) {
-                String Report = "SUR";
-                CmdResult srGenerationResult = report.reportQacli(isUnix, Report, out);
+                CmdResult srGenerationResult = report.reportQacli(isUnix, SUR.name(), out);
                 logCmdResult(srGenerationResult, out);
             }
 
-            String Report = "RCR";
-            CmdResult rcrGenerationResult = report.reportQacli(isUnix, Report, out);
+            CmdResult rcrGenerationResult = report.reportQacli(isUnix, RCR.name(), out);
             logCmdResult(rcrGenerationResult, out);
 
             return report.getComplianceStatus(out);
