@@ -341,8 +341,6 @@ public class PRQANotifier extends Publisher implements Serializable {
     @Override
     public boolean prebuild(AbstractBuild<?, ?> build, BuildListener listener) {
         boolean success = false;
-        build.setResult(Result.FAILURE);
-
         FilePath workspace = build.getWorkspace();
 
         if (workspace == null) {
@@ -358,13 +356,15 @@ public class PRQANotifier extends Publisher implements Serializable {
                 listener.getLogger().println("Failed to cleanup workspace reports.");
             }
             success = true;
-            build.setResult(Result.SUCCESS);
-        } catch (IOException | InterruptedException e) {
+        } catch (Exception ex) {
             listener.getLogger().println(ex.getMessage());
             listener.getLogger().println("Failed to cleanup workspace reports.");
             log.log(Level.SEVERE, "Cleanup crew missing!", ex);
         }
 
+        if (!success) {
+            build.setResult(Result.FAILURE);
+        }
         return success;
     }
 
@@ -1101,10 +1101,10 @@ public class PRQANotifier extends Publisher implements Serializable {
                 copyResourcesToArtifactsDir("*.log", build, listener);
             }
         } catch (Exception ex) {
+            log.log(Level.WARNING, "Failed copying build artifacts from slave to server - Use Copy Artifact Plugin", ex);
             outStream.println("Auto Copy of Build Artifacts to artifact dir on Master Failed");
             outStream.println("Manually add Build Artifacts to artifact dir or use Copy Artifact Plugin ");
             outStream.println(ex.getMessage());
-            log.log(Level.WARNING, "Failed copying build artifacts from slave to server - Use Copy Artifact Plugin", ex);
         }
     }
 
