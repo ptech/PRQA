@@ -357,9 +357,9 @@ public class PRQANotifier extends Publisher implements Serializable {
             }
             success = true;
         } catch (Exception ex) {
+            log.log(Level.SEVERE, "Cleanup crew missing!", ex);
             listener.getLogger().println(ex.getMessage());
             listener.getLogger().println("Failed to cleanup workspace reports.");
-            log.log(Level.SEVERE, "Cleanup crew missing!", ex);
         }
 
         if (!success) {
@@ -871,6 +871,7 @@ public class PRQANotifier extends Publisher implements Serializable {
         } catch (PrqaException ex) {
             log.log(Level.SEVERE, "PrqaException", ex);
             outStream.println(ex.getMessage());
+            outStream.println(Messages.PRQANotifier_FailedGettingResults());
             build.setResult(Result.FAILURE);
             return false;
         }
