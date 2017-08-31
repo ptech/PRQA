@@ -64,6 +64,10 @@ public class QAFrameworkPostBuildActionSetup extends PostBuildActionSetup {
     public boolean generateSup;
     public boolean analysisSettings;
     public boolean stopWhenFail;
+    public boolean reuseCmaDb;
+    public boolean useDiskStorage;
+    public boolean customCpuThreads;
+    public String maxNumThreads;
     public boolean generatePreprocess;
     public boolean assembleSupportAnalytics;
 
@@ -72,7 +76,8 @@ public class QAFrameworkPostBuildActionSetup extends PostBuildActionSetup {
             boolean performCrossModuleAnalysis, boolean enableDependencyMode,
             boolean generateReport, boolean publishToQAV, boolean loginToQAV, List<String> chosenServers, boolean uploadWhenStable, String qaVerifyProjectName,
             String uploadSnapshotName, String buildNumber, String uploadSourceCode, boolean generateCrr, boolean generateMdr, boolean generateSup,
-            boolean analysisSettings, boolean stopWhenFail, boolean generatePreprocess, boolean assembleSupportAnalytics) {
+            boolean analysisSettings, boolean stopWhenFail, boolean reuseCmaDb, boolean useDiskStorage, boolean customCpuThreads,
+            String maxNumThreads, boolean generatePreprocess, boolean assembleSupportAnalytics) {
 
         this.qaInstallation = qaInstallation;
         this.qaProject = qaProject;
@@ -94,6 +99,10 @@ public class QAFrameworkPostBuildActionSetup extends PostBuildActionSetup {
         this.generateSup = generateSup;
         this.analysisSettings = analysisSettings;
         this.stopWhenFail = stopWhenFail;
+        this.reuseCmaDb = reuseCmaDb;
+        this.useDiskStorage = useDiskStorage;
+        this.customCpuThreads = customCpuThreads;
+        this.maxNumThreads = maxNumThreads;
         this.generatePreprocess = generatePreprocess;
         this.assembleSupportAnalytics = assembleSupportAnalytics;
     }
@@ -250,6 +259,18 @@ public class QAFrameworkPostBuildActionSetup extends PostBuildActionSetup {
         this.assembleSupportAnalytics = assembleSupportAnalytics;
     }
 
+    public void setReuseCmaDb(boolean reuseCmaDb) {
+        this.reuseCmaDb = reuseCmaDb;
+    }
+
+    public void setUseDiskStorage(boolean useDiskStorage) {
+        this.useDiskStorage = useDiskStorage;
+    }
+
+    public void setMaxNumThreads(String maxNumThreads) {
+        this.maxNumThreads = maxNumThreads;
+    }
+
     public boolean isAnalysisSettings() {
         return analysisSettings;
     }
@@ -264,6 +285,26 @@ public class QAFrameworkPostBuildActionSetup extends PostBuildActionSetup {
 
     public boolean isAssembleSupportAnalytics() {
         return assembleSupportAnalytics;
+    }
+
+    public boolean isReuseCmaDb() {
+        return reuseCmaDb;
+    }
+
+    public boolean isUseDiskStorage() {
+        return useDiskStorage;
+    }
+
+    public String getMaxNumThreads() {
+        return maxNumThreads;
+    }
+
+    public boolean isCustomCpuThreads() {
+        return customCpuThreads;
+    }
+
+    public void setCustomCpuThreads(boolean customCpuThreads) {
+        this.customCpuThreads = customCpuThreads;
     }
 
     @Extension
@@ -340,6 +381,22 @@ public class QAFrameworkPostBuildActionSetup extends PostBuildActionSetup {
             if (!qaVerifyProjectName.matches("^[a-zA-Z0-9_-{}()$%]+$")) {
                 return FormValidation.errorWithMarkup("Project name is not valid [characters allowed: a-zA-Z0-9-_{}()$%]");
             }
+            return FormValidation.ok();
+        }
+
+        public FormValidation doCheckMaxNumThreads(@QueryParameter String maxNumThreads) {
+            if (StringUtils.isBlank(maxNumThreads)) {
+                return FormValidation.errorWithMarkup("Max Number of Threads should not be empty!");
+            }
+            try {
+                Integer parsedValue = Integer.parseInt(maxNumThreads);
+                if (parsedValue < 1 || parsedValue > 5) {
+                    return FormValidation.error(Messages.PRQANotifier_UseRange(1, 5));
+                }
+            } catch (NumberFormatException ex) {
+                return FormValidation.error(Messages.PRQANotifier_UseNoDecimals());
+            }
+
             return FormValidation.ok();
         }
 

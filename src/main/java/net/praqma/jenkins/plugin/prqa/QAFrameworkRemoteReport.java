@@ -97,6 +97,10 @@ public class QAFrameworkRemoteReport implements FileCallable<PRQAComplianceStatu
                 report.pullUnifyProjectQacli(isUnix, out);
             }
 
+            if (reportSetting.isAnalysisSettings() && reportSetting.isCustomCpuThreads()) {
+                report.applyCpuThreads(out);
+            }
+
             report.analyzeQacli(isUnix, "-cf", out);
 
             if (reportSetting.isQaCrossModuleAnalysis()) {

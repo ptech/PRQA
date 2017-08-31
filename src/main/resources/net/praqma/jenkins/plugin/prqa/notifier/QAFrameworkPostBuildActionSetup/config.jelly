@@ -73,6 +73,17 @@
                         <f:entry title="${%Stop Analysis Upon Failure}" field="stopWhenFail" help="/plugin/prqa-plugin/config/help-qaStopWhenFail.html">
                             <f:checkbox name="stopWhenFail" value="${instance.stopWhenFail}" checked="${instance.stopWhenFail}"/>
                         </f:entry>
+                        <f:entry title="${%Reuse CMA Database}" field="reuseCmaDb" help="/plugin/prqa-plugin/config/help-qaReuseCmaDb.html">
+                            <f:checkbox name="reuseCmaDb" value="${instance.reuseCmaDb}" checked="${instance.reuseCmaDb}"/>
+                        </f:entry>
+                        <f:entry title="${%Use Temporary Disk Storage for CMA}" field="useDiskStorage" help="/plugin/prqa-plugin/config/help-qaUseDiskStorage.html">
+                            <f:checkbox name="useDiskStorage" value="${instance.useDiskStorage}" checked="${instance.useDiskStorage}"/>
+                        </f:entry>
+                        <f:optionalBlock name="customCpuThreads" title="CPU's used for analysis" help="/plugin/prqa-plugin/config/help-qaCustomCpu.html" checked="${instance.customCpuThreads}" inline="true">
+                            <f:entry title="${%Max. Number of CPU}" field="maxNumThreads">
+                                <f:textbox value="${instance.maxNumThreads}"/>
+                            </f:entry>
+                        </f:optionalBlock>
                         <f:optionalBlock title="${%Generate Preprocessed Source}" name="generatePreprocess" help="/plugin/prqa-plugin/config/help-qaGeneratePreprocess.html" checked="${instance.generatePreprocess}" inline="true">
                             <f:entry title="${%Assemble Support Analytic for failed Files}" field="assembleSupportAnalytics" help="/plugin/prqa-plugin/config/help-qaAssembleSupportAnalytics.html">
                                 <f:checkbox name="assembleSupportAnalytics" value="${instance.assembleSupportAnalytics}" checked="${instance.assembleSupportAnalytics}"/>

@@ -923,6 +923,10 @@ public class PRQANotifier extends Publisher implements Serializable {
                     qaFrameworkPostBuildActionSetup.generateSup,
                     qaFrameworkPostBuildActionSetup.analysisSettings,
                     qaFrameworkPostBuildActionSetup.stopWhenFail,
+                    qaFrameworkPostBuildActionSetup.reuseCmaDb,
+                    qaFrameworkPostBuildActionSetup.useDiskStorage,
+                    qaFrameworkPostBuildActionSetup.customCpuThreads,
+                    qaFrameworkPostBuildActionSetup.maxNumThreads,
                     qaFrameworkPostBuildActionSetup.generatePreprocess,
                     qaFrameworkPostBuildActionSetup.assembleSupportAnalytics);
         }
