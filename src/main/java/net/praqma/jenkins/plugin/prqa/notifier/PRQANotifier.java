@@ -800,6 +800,7 @@ public class PRQANotifier extends Publisher implements Serializable {
         } catch (PrqaException ex) {
             log.log(Level.SEVERE, "PrqaException", ex);
             outStream.println(ex.getMessage());
+            outStream.println(Messages.PRQANotifier_FailedGettingResults());
             build.setResult(Result.FAILURE);
             return false;
         }
@@ -950,10 +951,8 @@ public class PRQANotifier extends Publisher implements Serializable {
             currentBuild.setMessagesWithinThresholdForEachMessageGroup(threshholdlevel);
             copyArtifacts(build, qaReportSettings);
         } catch (IOException ex) {
-            outStream.println(Messages.PRQANotifier_FailedGettingResults());
             throw new PrqaException(ex);
         } catch (InterruptedException ex) {
-            outStream.println(Messages.PRQANotifier_FailedGettingResults());
             throw new PrqaException(ex);
         }
         return currentBuild;
