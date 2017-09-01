@@ -1,24 +1,21 @@
 package net.praqma.jenkins.plugin.prqa.notifier;
 
 import com.google.common.collect.Iterables;
-import hudson.model.ProminentProjectAction;
 import hudson.model.AbstractProject;
 import hudson.model.Actionable;
 import hudson.model.Descriptor;
+import hudson.model.ProminentProjectAction;
 import hudson.tasks.Publisher;
 import hudson.util.DescribableList;
+import hudson.util.RunList;
+import net.praqma.jenkins.plugin.prqa.globalconfig.PRQAGlobalConfig;
+import net.praqma.jenkins.plugin.prqa.globalconfig.QAVerifyServerConfiguration;
+import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerResponse;
 
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
-
-import hudson.util.Iterators;
-import hudson.util.RunList;
-import net.praqma.jenkins.plugin.prqa.globalconfig.PRQAGlobalConfig;
-import net.praqma.jenkins.plugin.prqa.globalconfig.QAVerifyServerConfiguration;
-
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
 
 /**
  * 
