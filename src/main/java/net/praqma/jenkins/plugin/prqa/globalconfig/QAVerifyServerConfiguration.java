@@ -5,6 +5,7 @@
 package net.praqma.jenkins.plugin.prqa.globalconfig;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import hudson.tools.ToolInstallation;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -120,21 +121,16 @@ public class QAVerifyServerConfiguration extends ToolInstallation implements Ser
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof QAVerifyServerConfiguration) {
-			if (this == obj) {
-				return true;
-			}
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		QAVerifyServerConfiguration that = (QAVerifyServerConfiguration) o;
+		return Objects.equals(getConfigurationName(), that.getConfigurationName());
+	}
 
-			QAVerifyServerConfiguration qavsc = (QAVerifyServerConfiguration) obj;
-
-			return (qavsc.getConfigurationName() != null && getConfigurationName() != null)
-					&& qavsc.getConfigurationName().equals(
-							getConfigurationName());
-
-		} else {
-			return false;
-		}
+	@Override
+	public int hashCode() {
+		return Objects.hash(getConfigurationName());
 	}
 
 	public String getFullUrl() {

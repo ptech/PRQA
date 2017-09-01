@@ -1,9 +1,7 @@
 package net.praqma.jenkins.plugin.prqa.graphs;
 
-import hudson.util.ChartUtil;
-import hudson.util.ColorPalette;
-import hudson.util.DataSetBuilder;
-import hudson.util.ShiftedCategoryAxis;
+import hudson.util.*;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.io.IOException;
@@ -102,7 +100,14 @@ public abstract class PRQAGraph implements Serializable {
             }
             log.fine("Iterating using category: "+category);
             if(max != null && min != null) {
-                ChartUtil.generateGraph( req, rsp, createChart( dsb.build(), getTitle() == null ? category.toString() : getTitle() , null, threshHoldMax != null ? threshHoldMax.intValue() : max.intValue(), min.intValue()), width, height );     
+
+                final JFreeChart chart = createChart(dsb.build(), getTitle() == null ? category.toString() : getTitle(), null, threshHoldMax != null ? threshHoldMax.intValue() : max.intValue(), min.intValue());
+
+                new Graph(-1,width,height) {
+                    protected JFreeChart createGraph() {
+                        return chart;
+                    }
+                }.doPng(req,rsp);
             }
         
         }
