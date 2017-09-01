@@ -45,6 +45,7 @@ import net.prqma.prqa.qaframework.QaFrameworkReportSettings;
 import net.sf.json.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.export.Exported;
@@ -122,7 +123,7 @@ public class PRQANotifier extends Publisher implements Serializable {
         Map<String, String> artifacts = new HashMap<>();
 
         for (FilePath file : files) {
-            artifacts.put(file.getName(), file.getRemote().replaceAll(buildWorkspace.getRemote(), ""));
+            artifacts.put(file.getName(), StringUtils.replace(file.getRemote(), buildWorkspace.getRemote(), ""));
         }
 
         if (artifacts.isEmpty()) {
