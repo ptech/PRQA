@@ -385,16 +385,17 @@ public class QAFrameworkPostBuildActionSetup extends PostBuildActionSetup {
         }
 
         public FormValidation doCheckMaxNumThreads(@QueryParameter String maxNumThreads) {
+            final Integer minValue = 0;
             if (StringUtils.isBlank(maxNumThreads)) {
-                return FormValidation.errorWithMarkup("Max Number of Threads should not be empty!");
+                return FormValidation.errorWithMarkup(Messages.PRQANotifier_NotEmptyValue("Max. Number of Threads for Analysis"));
             }
             try {
                 Integer parsedValue = Integer.parseInt(maxNumThreads);
-                if (parsedValue < 1 || parsedValue > 5) {
-                    return FormValidation.error(Messages.PRQANotifier_UseRange(1, 5));
+                if (parsedValue <= minValue) {
+                    return FormValidation.error(Messages.PRQANotifier_WrongIntegerGreatherThan(minValue));
                 }
             } catch (NumberFormatException ex) {
-                return FormValidation.error(Messages.PRQANotifier_UseNoDecimals());
+                return FormValidation.error(Messages.PRQANotifier_UseInteger());
             }
 
             return FormValidation.ok();

@@ -79,8 +79,8 @@
                         <f:entry title="${%Use Temporary Disk Storage for CMA}" field="useDiskStorage" help="/plugin/prqa-plugin/config/help-qaUseDiskStorage.html">
                             <f:checkbox name="useDiskStorage" value="${instance.useDiskStorage}" checked="${instance.useDiskStorage}"/>
                         </f:entry>
-                        <f:optionalBlock name="customCpuThreads" title="CPU's used for analysis" help="/plugin/prqa-plugin/config/help-qaCustomCpu.html" checked="${instance.customCpuThreads}" inline="true">
-                            <f:entry title="${%Max. Number of CPU}" field="maxNumThreads">
+                        <f:optionalBlock name="customCpuThreads" title="Set Threads used for analysis" help="/plugin/prqa-plugin/config/help-qaCustomCpu.html" checked="${instance.customCpuThreads}" inline="true">
+                            <f:entry title="${%Max. Number of Analysis Threads}" field="maxNumThreads">
                                 <f:textbox value="${instance.maxNumThreads}"/>
                             </f:entry>
                         </f:optionalBlock>
