@@ -231,7 +231,7 @@ public class PRQANotifier extends Publisher implements Serializable {
                             + PRQAReport.getNamingTemplate(type, PRQAReport.XHTML_REPORT_EXTENSION)));
                     outStream.println(Messages.PRQANotifier_CopyToTarget(targetDir.getName()));
 
-                    build.getWorkspace().list(
+                    buildWorkspace.list(
                             "**/" + PRQAReport.getNamingTemplate(type, PRQAReport.XHTML_REPORT_EXTENSION))[0]
                             .copyTo(targetDir);
                     outStream.println(Messages.PRQANotifier_SuccesCopyReport());
