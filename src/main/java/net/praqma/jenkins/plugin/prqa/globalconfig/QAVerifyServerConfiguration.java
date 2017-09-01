@@ -122,8 +122,12 @@ public class QAVerifyServerConfiguration extends ToolInstallation implements Ser
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
 		QAVerifyServerConfiguration that = (QAVerifyServerConfiguration) o;
 		return Objects.equals(getConfigurationName(), that.getConfigurationName());
 	}
