@@ -21,7 +21,7 @@
                 <f:descriptorRadioList descriptors="${descriptor.getFileProjectSources()}"
                                        varName="fileProjectSource"
                                        instance="${instance.fileProjectSource}"
-                                       title="fileProjectSource"/>
+                                       title=""/>
             </f:entry>
 
         </f:block>

@@ -20,7 +20,7 @@
     <f:block>
         <f:entry field="sourceQAFramework"
                  help="/plugin/prqa-plugin/config/help-configProductType.html">
-            <f:descriptorRadioList title="sourceQAFramework"
+            <f:descriptorRadioList title=""
                                    descriptors="${descriptor.getReportSources()}"
                                    varName="sourceQAFramework"
                                    instance="${instance.sourceQAFramework}"
