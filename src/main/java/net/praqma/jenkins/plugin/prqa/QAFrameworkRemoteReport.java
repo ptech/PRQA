@@ -91,7 +91,7 @@ public class QAFrameworkRemoteReport extends MasterToSlaveFileCallable<PRQACompl
          */
         try {
             if (StringUtils.isBlank(report.getSettings().getQaInstallation())) {
-                throw new PrqaException("Incorrect configuration!");
+                throw new PrqaException("Incorrect configuration of QA framework installation!");
             }
 
             if (reportSetting.isLoginToQAV() && reportSetting.isPullUnifiedProject()) {
