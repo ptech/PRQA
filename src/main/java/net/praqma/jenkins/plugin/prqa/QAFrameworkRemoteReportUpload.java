@@ -34,25 +34,24 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
 
+import jenkins.MasterToSlaveFileCallable;
 import net.praqma.prqa.PRQAApplicationSettings;
 import net.praqma.prqa.QaFrameworkVersion;
 import net.praqma.prqa.exceptions.PrqaException;
 import net.praqma.prqa.products.QACli;
 import net.praqma.prqa.reports.QAFrameworkReport;
-import net.praqma.prqa.status.PRQAComplianceStatus;
 import net.praqma.util.execute.CmdResult;
 import net.prqma.prqa.qaframework.QaFrameworkReportSettings;
 
 import org.apache.commons.lang.StringUtils;
-import org.jdom2.JDOMException;
 
-public class QAFrameworkRemoteReportUpload implements FileCallable<Void>, Serializable {
+public class QAFrameworkRemoteReportUpload extends MasterToSlaveFileCallable<Void> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     private QAFrameworkReport report;
     private BuildListener listener;
-    boolean isUnix;
+    private boolean isUnix;
     private QaFrameworkReportSettings reportSetting;
 
     public QAFrameworkRemoteReportUpload(QAFrameworkReport report, BuildListener listener, boolean isUnix) {
@@ -61,8 +60,8 @@ public class QAFrameworkRemoteReportUpload implements FileCallable<Void>, Serial
         this.isUnix = isUnix;
     }
 
-    private Map<String, String> expandEnvironment(Map<String, String> environment, PRQAApplicationSettings appSettings,
-            QaFrameworkReportSettings reportSetting) {
+    private Map<String, String> expandEnvironment(Map<String, String> environment,
+                                                  QaFrameworkReportSettings reportSetting) {
         this.reportSetting = reportSetting;
         if (environment == null) {
             return Collections.emptyMap();
@@ -76,8 +75,7 @@ public class QAFrameworkRemoteReportUpload implements FileCallable<Void>, Serial
     @Override
     public Void invoke(File f, VirtualChannel channel) throws IOException, InterruptedException {
 
-        Map<String, String> expandedEnvironment = expandEnvironment(report.getEnvironment(), report.getAppSettings(),
-                report.getSettings());
+        Map<String, String> expandedEnvironment = expandEnvironment(report.getEnvironment(), report.getSettings());
 
         report.setEnvironment(expandedEnvironment);
         report.setWorkspace(f);
@@ -95,8 +93,7 @@ public class QAFrameworkRemoteReportUpload implements FileCallable<Void>, Serial
                 throw new PrqaException("Incorrect configuration!");
             }
             if (reportSetting.isLoginToQAV() && reportSetting.isPublishToQAV()) {
-                CmdResult uploadResult = report.uploadQacli(out);
-                logCmdResult(uploadResult, out);
+                report.uploadQacli(out);
             }
             return null;
         } catch (PrqaException exception) {
@@ -104,13 +101,6 @@ public class QAFrameworkRemoteReportUpload implements FileCallable<Void>, Serial
         } catch (Exception ex) {
             throw new IOException(ex.getMessage());
         }
-    }
-
-    private void logCmdResult(CmdResult result, PrintStream out) {
-        if (result == null) {
-            return;
-        }
-        out.println(result.stdoutBuffer.toString());
     }
 
     public void setQaFrameworkVersion(QaFrameworkVersion qaFrameworkVersion) {

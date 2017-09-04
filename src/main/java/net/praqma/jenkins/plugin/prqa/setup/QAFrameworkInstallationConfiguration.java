@@ -2,15 +2,17 @@ package net.praqma.jenkins.plugin.prqa.setup;
 
 import hudson.EnvVars;
 import hudson.Extension;
+import hudson.model.Node;
+import hudson.model.TaskListener;
+import hudson.slaves.NodeSpecific;
 import hudson.tools.ToolDescriptor;
 import hudson.tools.ToolInstallation;
+import hudson.tools.ToolLocationNodeProperty;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.io.IOException;
+import java.util.*;
 
 import jenkins.model.Jenkins;
 import net.praqma.prqa.products.QACli;
@@ -24,7 +26,9 @@ import org.kohsuke.stapler.StaplerRequest;
 
 import com.google.common.base.Strings;
 
-public class QAFrameworkInstallationConfiguration extends ToolInstallation implements PRQAToolSuite {
+import javax.annotation.Nonnull;
+
+public class QAFrameworkInstallationConfiguration extends ToolInstallation implements PRQAToolSuite, NodeSpecific<QAFrameworkInstallationConfiguration> {
 
 	private static final long serialVersionUID = 1L;
 	public final String qafHome;
@@ -52,8 +56,8 @@ public class QAFrameworkInstallationConfiguration extends ToolInstallation imple
 
 	public HashMap<String, String> convert(EnvVars vars) {
 		HashMap<String, String> varsMap = new HashMap<String, String>();
-		for (String s : vars.keySet()) {
-			varsMap.put(s, vars.get(s));
+		for (Map.Entry<String, String> s : vars.entrySet()) {
+			varsMap.put(s.getKey(), s.getValue());
 		}
 		return varsMap;
 	}
@@ -73,6 +77,17 @@ public class QAFrameworkInstallationConfiguration extends ToolInstallation imple
 		return null;
 	}
 
+	@Override
+	public QAFrameworkInstallationConfiguration forNode(Node node, TaskListener log) throws IOException, InterruptedException {
+		String translatedHome = translateFor(node, log);
+		return new QAFrameworkInstallationConfiguration(
+				qafName,
+				translatedHome,
+				toolType,
+				tool
+		);
+	}
+
 	@Extension
 	public static final class DescriptorImpl extends ToolDescriptor<QAFrameworkInstallationConfiguration> {
 
@@ -87,7 +102,12 @@ public class QAFrameworkInstallationConfiguration extends ToolInstallation imple
 		}
 
 		@Override
-		public QAFrameworkInstallationConfiguration newInstance(StaplerRequest req, JSONObject formData) throws FormException {
+		public QAFrameworkInstallationConfiguration newInstance(StaplerRequest req, @Nonnull JSONObject formData) throws FormException {
+
+			if (req == null) {
+				throw new FormException(new Exception("Bad request"), "Bad request");
+			}
+
 			QAFrameworkInstallationConfiguration suite = req.bindJSON(QAFrameworkInstallationConfiguration.class, formData);
 
 			save();
@@ -128,8 +148,12 @@ public class QAFrameworkInstallationConfiguration extends ToolInstallation imple
 					}
 				}
 			}
-			save();
-			return super.configure(req, json);
+
+			boolean configure = super.configure(req, json);
+			if (configure) {
+				save();
+			}
+			return configure;
 		}
 
 		private boolean isValidString(String valid) {
