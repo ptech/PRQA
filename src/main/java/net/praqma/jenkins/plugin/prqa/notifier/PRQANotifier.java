@@ -271,7 +271,7 @@ public class PRQANotifier extends Publisher implements Serializable {
         // COPY only last generated reports
         FilePath buildWorkspace = build.getWorkspace();
         if (buildWorkspace == null) {
-            return;
+            throw new IOException("Invalid workspace");
         }
 
         List<FilePath> workspaceFiles = buildWorkspace.list();
