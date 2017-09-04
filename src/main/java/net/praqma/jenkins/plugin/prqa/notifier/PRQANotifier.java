@@ -214,6 +214,7 @@ public class PRQANotifier extends Publisher implements Serializable {
         FilePath buildWorkspace = build.getWorkspace();
 
         if (buildWorkspace == null) {
+            // TODO add log here
             throw new RuntimeException("Invalid workspace");
         }
 
@@ -242,8 +243,9 @@ public class PRQANotifier extends Publisher implements Serializable {
 
             QaFrameworkReportSettings qaFrameworkSettings = (QaFrameworkReportSettings) settings;
 
-            copyGeneratedReportsToJobWorkspace(build, qaFrameworkSettings.getQaProject());
-            copyReportsFromWorkspaceToArtifactsDir(build, listener, build.getTimeInMillis());
+            File artifact = build.getArtifactsDir();
+            copyGeneratedReportsToJobWorkspace(workspace, qaFrameworkSettings.getQaProject());
+            copyReportsFromWorkspaceToArtifactsDir(artifact, workspace, build.getTimeInMillis());
         }
     }
 
@@ -700,7 +702,7 @@ public class PRQANotifier extends Publisher implements Serializable {
         public Publisher newInstance(StaplerRequest req, @Nonnull JSONObject formData) throws Descriptor.FormException {
 
             if (req == null) {
-                //TOFO log here
+                //TODO log here
                 throw new FormException(new Exception("Bad request"), "Bad request");
             }
 
