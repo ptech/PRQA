@@ -97,7 +97,7 @@ public class QAFrameworkRemoteReportUpload extends MasterToSlaveFileCallable<Voi
             }
             return null;
         } catch (PrqaUploadException ex) {
-            throw new IOException(ex.getMessage());
+            throw new IOException(ex.getMessage(), ex);
         } catch (PrqaException exception) {
             throw new IOException(exception.getMessage(), exception);
         }

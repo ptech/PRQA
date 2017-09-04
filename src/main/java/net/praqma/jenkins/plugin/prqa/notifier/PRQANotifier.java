@@ -214,8 +214,7 @@ public class PRQANotifier extends Publisher implements Serializable {
         FilePath buildWorkspace = build.getWorkspace();
 
         if (buildWorkspace == null) {
-            // TODO add log here
-            throw new RuntimeException("Invalid workspace");
+            throw new IOException("Invalid workspace");
         }
 
         if (settings instanceof PRQAReportSettings) {
@@ -253,12 +252,10 @@ public class PRQANotifier extends Publisher implements Serializable {
         FilePath buildWorkspace = build.getWorkspace();
 
         if (buildWorkspace == null) {
-            return;
+            throw new IOException("Invalid workspace");
         }
 
-        CopyReportsToWorkspace cpy = new CopyReportsToWorkspace(qaProject);
-
-        buildWorkspace.act(cpy);
+        buildWorkspace.act(new CopyReportsToWorkspace(qaProject));
     }
 
     private boolean containsReportName(String fileName) {
@@ -353,16 +350,13 @@ public class PRQANotifier extends Publisher implements Serializable {
 
         try {
             success = workspace.act(deleter);
-            if (!success) {
-                listener.getLogger().println("Failed to cleanup workspace reports.");
-            }
-        } catch (Exception ex) {
+        } catch (IOException | InterruptedException ex) {
             log.log(Level.SEVERE, "Cleanup crew missing!", ex);
             listener.getLogger().println(ex.getMessage());
-            listener.getLogger().println("Failed to cleanup workspace reports.");
         }
 
         if (!success) {
+            listener.getLogger().println("Failed to cleanup workspace reports.");
             build.setResult(Result.FAILURE);
         }
         return success;
@@ -397,7 +391,6 @@ public class PRQANotifier extends Publisher implements Serializable {
         FilePath workspace = build.getWorkspace();
 
         if (workspace == null) {
-            //TODO log here
             throw new IOException("Invalid workspace. Cannot continue.");
         }
 
@@ -700,7 +693,6 @@ public class PRQANotifier extends Publisher implements Serializable {
         public Publisher newInstance(StaplerRequest req, @Nonnull JSONObject formData) throws Descriptor.FormException {
 
             if (req == null) {
-                //TODO log here
                 throw new FormException(new Exception("Bad request"), "Bad request");
             }
 
@@ -777,20 +769,17 @@ public class PRQANotifier extends Publisher implements Serializable {
         FilePath workspace = build.getWorkspace();
 
         if (workspace == null) {
-            // TODO log here
             throw new IOException("Invalid workspace. Cannot continue.");
         }
 
         Computer currentComputer = Computer.currentComputer();
 
         if (currentComputer == null) {
-            // TODO log here
             throw new IOException("Invalid machine. Cannot continue.");
         }
 
         Node node = currentComputer.getNode();
         if (node == null) {
-            // TODO log here
             throw new IOException("Invalid machine. Cannot continue.");
         }
 
@@ -808,7 +797,7 @@ public class PRQANotifier extends Publisher implements Serializable {
             return false;
         }
 
-        qaFrameworkInstallationConfiguration = qaFrameworkInstallationConfiguration.forNode(Computer.currentComputer().getNode(), listener);
+        qaFrameworkInstallationConfiguration = qaFrameworkInstallationConfiguration.forNode(node, listener);
 
         outStream.println(VersionInfo.getPluginVersion());
 
@@ -826,8 +815,8 @@ public class PRQANotifier extends Publisher implements Serializable {
         QaFrameworkReportSettings qaReportSettings = null;
         try {
             qaReportSettings = setQaFrameworkReportSettings(qaFrameworkPostBuildActionSetup, build, listener);
-        } catch (PrqaException ex) {
-            log.log(Level.SEVERE,"PrqaException", ex);
+        } catch (PrqaSetupException ex) {
+            log.log(Level.SEVERE,"PrqaSetupException ", ex);
             outStream.println(ex.getMessage());
             build.setResult(Result.FAILURE);
             return false;
@@ -1023,7 +1012,6 @@ public class PRQANotifier extends Publisher implements Serializable {
         FilePath workspace = build.getWorkspace();
 
         if (workspace == null) {
-            // TODO log here
             throw new IOException("Invalid workspace. Cannot continue.");
         }
 
@@ -1052,7 +1040,6 @@ public class PRQANotifier extends Publisher implements Serializable {
         FilePath workspace = build.getWorkspace();
 
         if (workspace == null) {
-            // TODO log here
             throw new IOException("Invalid workspace. Cannot continue.");
         }
 
@@ -1062,8 +1049,6 @@ public class PRQANotifier extends Publisher implements Serializable {
             QaFrameworkVersion qaFrameworkVersion = new QaFrameworkVersion(workspace.act(remoteToolCheck));
             success = isQafVersionSupported(qaFrameworkVersion);
             if (!success) {
-                // TODO log here and check failure
-                build.setResult(Result.FAILURE);
                 throw new PrqaException("Build failure. Please upgrade to a newer version of PRQA Framework");
             }
             remoteReportUpload.setQaFrameworkVersion(qaFrameworkVersion);
@@ -1101,8 +1086,8 @@ public class PRQANotifier extends Publisher implements Serializable {
             if (qaReportSettings.isPublishToQAV() && qaReportSettings.isLoginToQAV()) {
                 copyResourcesToArtifactsDir("*.log", build, listener);
             }
-        } catch (Exception ex) {
-            log.log(Level.WARNING, "Failed copying build artifacts from slave to server - Use Copy Artifact Plugin", ex);
+        } catch (IOException | InterruptedException ex) {
+            log.log(Level.SEVERE, "Failed copying build artifacts from slave to server - Use Copy Artifact Plugin", ex);
             outStream.println("Auto Copy of Build Artifacts to artifact dir on Master Failed");
             outStream.println("Manually add Build Artifacts to artifact dir or use Copy Artifact Plugin ");
             outStream.println(ex.getMessage());
