@@ -381,8 +381,10 @@ public class PRQANotifier extends Publisher implements Serializable {
 
         if (sourceQAFramework != null && sourceQAFramework instanceof QAFrameworkPostBuildActionSetup) {
             return performQaFrameworkBuild(build, launcher, listener);
-        } else {
+        } else if (sourceQAFramework != null) {
             return performQaToolBuild(build, launcher, listener);
+        } else {
+            return false;
         }
     }
 
