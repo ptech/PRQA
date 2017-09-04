@@ -243,7 +243,7 @@ public class PRQANotifier extends Publisher implements Serializable {
             QaFrameworkReportSettings qaFrameworkSettings = (QaFrameworkReportSettings) settings;
 
             copyGeneratedReportsToJobWorkspace(build, qaFrameworkSettings.getQaProject());
-            copyReportsFromWorkspaceToArtifactsDir(build, listener, build.getTimeInMillis());
+            copyReportsFromWorkspaceToArtifactsDir(build, listener);
         }
     }
 
@@ -265,7 +265,7 @@ public class PRQANotifier extends Publisher implements Serializable {
                 fileName.contains(MDR.name());
     }
 
-    private void copyReportsFromWorkspaceToArtifactsDir(AbstractBuild<?, ?> build, BuildListener listener, long elapsedTime)
+    private void copyReportsFromWorkspaceToArtifactsDir(AbstractBuild<?, ?> build, BuildListener listener)
                 throws IOException, InterruptedException {
 
         // COPY only last generated reports
@@ -293,7 +293,7 @@ public class PRQANotifier extends Publisher implements Serializable {
         Map<String, String> artifacts = new HashMap<>();
 
         for (FilePath file : workspaceFiles) {
-            if (file.lastModified() < elapsedTime) {
+            if (file.lastModified() < build.getTimeInMillis()) {
                 break;
             }
 
@@ -371,7 +371,7 @@ public class PRQANotifier extends Publisher implements Serializable {
         Result buildResult = build.getResult();
 
         if (buildResult == null) {
-            log.warning("Build result is unavailable at this point");
+            log.log(Level.WARNING, "Build result is unavailable at this point");
         } else {
             if (buildResult.isWorseOrEqualTo(Result.FAILURE) && runWhenSuccess) {
                 build.setResult(Result.FAILURE);
@@ -381,7 +381,7 @@ public class PRQANotifier extends Publisher implements Serializable {
 
         if (sourceQAFramework != null && sourceQAFramework instanceof QAFrameworkPostBuildActionSetup) {
             return performQaFrameworkBuild(build, launcher, listener);
-        } else if (sourceQAFramework != null) {
+        } else if (sourceQAFramework != null && sourceQAFramework instanceof PRQAReportPRQAToolSource) {
             return performQaToolBuild(build, launcher, listener);
         } else {
             return false;
@@ -818,7 +818,7 @@ public class PRQANotifier extends Publisher implements Serializable {
         try {
             qaReportSettings = setQaFrameworkReportSettings(qaFrameworkPostBuildActionSetup, build, listener);
         } catch (PrqaSetupException ex) {
-            log.log(Level.SEVERE,"PrqaSetupException ", ex);
+            log.log(Level.SEVERE, ex.getMessage(), ex);
             outStream.println(ex.getMessage());
             build.setResult(Result.FAILURE);
             return false;
@@ -860,9 +860,8 @@ public class PRQANotifier extends Publisher implements Serializable {
 
             currentBuild = performBuild(build, remoteToolCheck, remoteReport, qaReportSettings, listener);
         } catch (PrqaException ex) {
-            log.log(Level.SEVERE, "PrqaException", ex);
+            log.log(Level.SEVERE, ex.getMessage(), ex);
             outStream.println(ex.getMessage());
-            outStream.println(Messages.PRQANotifier_FailedGettingResults());
             build.setResult(Result.FAILURE);
             return false;
         }
@@ -900,9 +899,9 @@ public class PRQANotifier extends Publisher implements Serializable {
                     outStream.println("UPLOAD WARNING: Build is Unstable but upload will continue...");
                     for (QAFrameworkRemoteReportUpload remoteReportUpload : remoteReportUploads) {
                         try {
-                            performUpload(build, appSettings, remoteToolCheck, remoteReportUpload);
+                            performUpload(build, remoteToolCheck, remoteReportUpload);
                         } catch (PrqaException ex) {
-                            log.log(Level.SEVERE, "PrqaException", ex);
+                            log.log(Level.SEVERE, ex.getMessage(), ex);
                             outStream.println(ex.getMessage());
                             build.setResult(Result.FAILURE);
                             return false;
@@ -913,21 +912,21 @@ public class PRQANotifier extends Publisher implements Serializable {
                         && (qaReportSettings.isQaUploadWhenStable()
                         || buildResult.isWorseOrEqualTo(Result.FAILURE))) {
                     outStream.println("UPLOAD WARNING: QAV Upload cant be perform because build is Unstable");
-                    log.warning("UPLOAD WARNING - QAV Upload cant be perform because build is Unstable");
+                    log.log(Level.WARNING, "UPLOAD WARNING - QAV Upload cant be perform because build is Unstable");
                 }
 
             } else if (qaReportSettings.isLoginToQAV() && qaReportSettings.isPublishToQAV()) {
                 if (buildResult.isWorseOrEqualTo(Result.FAILURE)
                         && qaReportSettings.isQaUploadWhenStable()) {
                     outStream.println("UPLOAD WARNING: QAV Upload cant be perform because build is Unstable");
-                    log.warning("UPLOAD WARNING - QAV Upload cant be perform because build is Unstable");
+                    log.log(Level.WARNING, "UPLOAD WARNING - QAV Upload cant be perform because build is Unstable");
                 } else {
                     outStream.println("UPLOAD INFO: QAV Upload...");
                     for (QAFrameworkRemoteReportUpload remoteReportUpload : remoteReportUploads) {
                         try {
-                            performUpload(build, appSettings, remoteToolCheck, remoteReportUpload);
+                            performUpload(build, remoteToolCheck, remoteReportUpload);
                         } catch (PrqaException ex) {
-                            log.log(Level.SEVERE,"PrqaException", ex);
+                            log.log(Level.SEVERE, ex.getMessage(), ex);
                             outStream.println(ex.getMessage());
                             build.setResult(Result.FAILURE);
                             return false;
@@ -1009,7 +1008,6 @@ public class PRQANotifier extends Publisher implements Serializable {
                                               PRQARemoteToolCheck remoteToolCheck, QAFrameworkRemoteReport remoteReport,
                                               QaFrameworkReportSettings qaReportSettings, BuildListener listener) throws PrqaException, IOException {
 
-        boolean success = true;
         PRQAComplianceStatus currentBuild;
         FilePath workspace = build.getWorkspace();
 
@@ -1019,8 +1017,8 @@ public class PRQANotifier extends Publisher implements Serializable {
 
         try {
             QaFrameworkVersion qaFrameworkVersion = new QaFrameworkVersion(workspace.act(remoteToolCheck));
-            success = isQafVersionSupported(qaFrameworkVersion);
-            if (!success) {
+
+            if (!isQafVersionSupported(qaFrameworkVersion)) {
                 build.setResult(Result.FAILURE);
                 throw new PrqaException("Build failure. Please upgrade to a newer version of PRQA Framework");
             }
@@ -1036,8 +1034,8 @@ public class PRQANotifier extends Publisher implements Serializable {
         return currentBuild;
     }
 
-    private void performUpload(AbstractBuild<?, ?> build, PRQAApplicationSettings appSettings,
-                                               PRQARemoteToolCheck remoteToolCheck, QAFrameworkRemoteReportUpload remoteReportUpload) throws PrqaException, IOException {
+    private void performUpload(AbstractBuild<?, ?> build, PRQARemoteToolCheck remoteToolCheck,
+                               QAFrameworkRemoteReportUpload remoteReportUpload) throws PrqaException, IOException {
 
         FilePath workspace = build.getWorkspace();
 
