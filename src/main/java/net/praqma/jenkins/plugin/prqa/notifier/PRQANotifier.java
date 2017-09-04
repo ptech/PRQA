@@ -243,9 +243,8 @@ public class PRQANotifier extends Publisher implements Serializable {
 
             QaFrameworkReportSettings qaFrameworkSettings = (QaFrameworkReportSettings) settings;
 
-            File artifact = build.getArtifactsDir();
-            copyGeneratedReportsToJobWorkspace(workspace, qaFrameworkSettings.getQaProject());
-            copyReportsFromWorkspaceToArtifactsDir(artifact, workspace, build.getTimeInMillis());
+            copyGeneratedReportsToJobWorkspace(build, qaFrameworkSettings.getQaProject());
+            copyReportsFromWorkspaceToArtifactsDir(build, listener, build.getTimeInMillis());
         }
     }
 
@@ -353,11 +352,10 @@ public class PRQANotifier extends Publisher implements Serializable {
         DeleteReportsFromWorkspace deleter = new DeleteReportsFromWorkspace();
 
         try {
-            Boolean act = workspace.act(deleter);
-            if (!act) {
+            success = workspace.act(deleter);
+            if (!success) {
                 listener.getLogger().println("Failed to cleanup workspace reports.");
             }
-            success = true;
         } catch (Exception ex) {
             log.log(Level.SEVERE, "Cleanup crew missing!", ex);
             listener.getLogger().println(ex.getMessage());
@@ -1041,7 +1039,7 @@ public class PRQANotifier extends Publisher implements Serializable {
             currentBuild = workspace.act(remoteReport);
             currentBuild.setMessagesWithinThresholdForEachMessageGroup(threshholdlevel);
             copyArtifacts(build, qaReportSettings, listener);
-        } catch (IOException || InterruptedException ex) {
+        } catch (IOException | InterruptedException ex) {
             outStream.println(Messages.PRQANotifier_FailedGettingResults());
             throw new PrqaException(ex);
         }
