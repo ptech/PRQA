@@ -383,9 +383,8 @@ public class PRQANotifier extends Publisher implements Serializable {
             return performQaFrameworkBuild(build, launcher, listener);
         } else if (sourceQAFramework != null && sourceQAFramework instanceof PRQAReportPRQAToolSource) {
             return performQaToolBuild(build, launcher, listener);
-        } else {
-            return false;
         }
+        return false;
     }
 
     private boolean performQaToolBuild(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws IOException {
