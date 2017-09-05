@@ -3,7 +3,7 @@
          xmlns:f="/lib/form">
     <style>
         .not-impl {
-        font-style:italic;
+            font-style:italic;
         }
         .selectorHelper,
         .selectorHelper + table > tbody > tr.optional-block-start.row-group-start.row-set-start {
