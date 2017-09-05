@@ -798,18 +798,22 @@ public class PRQANotifier extends Publisher implements Serializable {
         QAFrameworkInstallationConfiguration qaFrameworkInstallationConfiguration = QAFrameworkInstallationConfiguration
                 .getInstallationByName(qaFrameworkPostBuildActionSetup.qaInstallation);
 
-        if (qaFrameworkInstallationConfiguration == null) {
-            String msg = String.format("The job uses a product configuration (%s) that no longer exists, please reconfigure.", "");
-            outStream.println(msg);
-            log.log(Level.WARNING, "PrqaException", msg);
-            return false;
-        }
-
-        qaFrameworkInstallationConfiguration = qaFrameworkInstallationConfiguration.forNode(node, listener);
-
         outStream.println(VersionInfo.getPluginVersion());
 
-        PRQAToolSuite suite = qaFrameworkInstallationConfiguration;
+        PRQAToolSuite suite = null;
+        if (qaFrameworkInstallationConfiguration != null) {
+            suite = qaFrameworkInstallationConfiguration;
+        } else {
+            try {
+                build.setResult(Result.FAILURE);
+                throw new PrqaSetupException(String.format(
+                        "The job uses a product configuration (%s) that no longer exists, please reconfigure.", qaFrameworkPostBuildActionSetup.qaInstallation));
+            } catch (PrqaSetupException pex) {
+                outStream.println(pex.getMessage());
+                log.log(Level.WARNING, "PrqaException", pex.getCause());
+                return false;
+            }
+        }
 
         outStream.println(Messages.PRQANotifier_ReportGenerateText());
         outStream.println("Workspace : " + workspace.getRemote());
