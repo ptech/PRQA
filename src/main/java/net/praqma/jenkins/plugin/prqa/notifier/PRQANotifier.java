@@ -991,7 +991,6 @@ public class PRQANotifier extends Publisher implements Serializable {
             QaFrameworkVersion qaFrameworkVersion = new QaFrameworkVersion(workspace.act(remoteToolCheck));
 
             if (!isQafVersionSupported(qaFrameworkVersion)) {
-                build.setResult(FAILURE);
                 throw new PrqaException("Build failure. Please upgrade to a newer version of PRQA Framework");
             }
 
