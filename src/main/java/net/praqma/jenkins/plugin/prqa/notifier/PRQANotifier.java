@@ -827,35 +827,27 @@ public class PRQANotifier extends Publisher implements Serializable {
 
         Collection<QAFrameworkRemoteReportUpload> remoteReportUploads = new ArrayList<>();
 
-        for (String chosenServer : qaFrameworkPostBuildActionSetup.chosenServers) {
-            QAVerifyServerSettings qaVerifySettings = setQaVerifyServerSettings(chosenServer);
-            QAFrameworkReport report = new QAFrameworkReport(qaReportSettings, qaVerifySettings, appSettings,
-                    environmentVariables);
+        if (qaFrameworkPostBuildActionSetup.chosenServers != null &&
+                !qaFrameworkPostBuildActionSetup.chosenServers.isEmpty()) {
+            for (String chosenServer : qaFrameworkPostBuildActionSetup.chosenServers) {
+                QAVerifyServerSettings qaVerifySettings = setQaVerifyServerSettings(chosenServer);
+                QAFrameworkReport report = new QAFrameworkReport(qaReportSettings, qaVerifySettings, appSettings,
+                        environmentVariables);
 
-            QAFrameworkRemoteReport remoteReport = new QAFrameworkRemoteReport(report, listener, launcher.isUnix());
-            QAFrameworkRemoteReportUpload remoteReportUpload = new QAFrameworkRemoteReportUpload(report, listener, launcher.isUnix());
-
-            remoteReports.add(remoteReport);
-            remoteReportUploads.add(remoteReportUpload);
+                remoteReports.add(new QAFrameworkRemoteReport(report, listener, launcher.isUnix()));
+                remoteReportUploads.add(new QAFrameworkRemoteReportUpload(report, listener, launcher.isUnix()));
+            }
+        } else {
+            QAFrameworkReport report = new QAFrameworkReport(qaReportSettings, setQaVerifyServerSettings(null),
+                    appSettings, environmentVariables);
+            remoteReports.add(new QAFrameworkRemoteReport(report, listener, launcher.isUnix()));
         }
 
         PRQARemoteToolCheck remoteToolCheck = new PRQARemoteToolCheck(new QACli(), environmentVariables, appSettings,
                 qaReportSettings, listener, launcher.isUnix());
         PRQAComplianceStatus currentBuild;
         try {
-            QAFrameworkRemoteReport remoteReport;
-
-            if (remoteReports.isEmpty()) {
-                // Use a dummy report if no servers defined
-                QAVerifyServerSettings qaVerifySettings = setQaVerifyServerSettings(null);
-
-                QAFrameworkReport report = new QAFrameworkReport(qaReportSettings, qaVerifySettings, appSettings,
-                        environmentVariables);
-
-                remoteReport = new QAFrameworkRemoteReport(report, listener, launcher.isUnix());
-            } else {
-                remoteReport = remoteReports.iterator().next();
-            }
+            QAFrameworkRemoteReport remoteReport = remoteReports.iterator().next();
 
             currentBuild = performBuild(build, remoteToolCheck, remoteReport, qaReportSettings, listener);
         } catch (PrqaException ex) {
@@ -886,55 +878,33 @@ public class PRQANotifier extends Publisher implements Serializable {
 
         Result buildResult = build.getResult();
 
-        if (buildResult != null) {
-            if (!res) {
-                if (!buildResult.isWorseOrEqualTo(Result.FAILURE)) {
-                    build.setResult(Result.UNSTABLE);
-                }
-                if (qaReportSettings.isLoginToQAV()
-                        && qaReportSettings.isPublishToQAV()
-                        && !qaReportSettings.isQaUploadWhenStable()
-                        && !buildResult.isWorseOrEqualTo(Result.FAILURE)) {
-                    outStream.println("UPLOAD WARNING: Build is Unstable but upload will continue...");
-                    for (QAFrameworkRemoteReportUpload remoteReportUpload : remoteReportUploads) {
-                        try {
-                            performUpload(build, remoteToolCheck, remoteReportUpload);
-                        } catch (PrqaException ex) {
-                            log.log(Level.SEVERE, ex.getMessage(), ex);
-                            outStream.println(ex.getMessage());
-                            build.setResult(Result.FAILURE);
-                            return false;
-                        }
-                    }
-                } else if (qaReportSettings.isLoginToQAV()
-                        && qaReportSettings.isPublishToQAV()
-                        && (qaReportSettings.isQaUploadWhenStable()
-                        || buildResult.isWorseOrEqualTo(Result.FAILURE))) {
-                    outStream.println("UPLOAD WARNING: QAV Upload cant be perform because build is Unstable");
-                    log.log(Level.WARNING, "UPLOAD WARNING - QAV Upload cant be perform because build is Unstable");
-                }
+        if (buildResult == null) {
+            return false;
+        }
+        if (!res && !buildResult.isWorseOrEqualTo(Result.FAILURE)) {
+            build.setResult(Result.UNSTABLE);
+        }
 
-            } else if (qaReportSettings.isLoginToQAV() && qaReportSettings.isPublishToQAV()) {
-                if (buildResult.isWorseOrEqualTo(Result.FAILURE)
-                        && qaReportSettings.isQaUploadWhenStable()) {
-                    outStream.println("UPLOAD WARNING: QAV Upload cant be perform because build is Unstable");
-                    log.log(Level.WARNING, "UPLOAD WARNING - QAV Upload cant be perform because build is Unstable");
-                } else {
-                    outStream.println("UPLOAD INFO: QAV Upload...");
-                    for (QAFrameworkRemoteReportUpload remoteReportUpload : remoteReportUploads) {
-                        try {
-                            performUpload(build, remoteToolCheck, remoteReportUpload);
-                        } catch (PrqaException ex) {
-                            log.log(Level.SEVERE, ex.getMessage(), ex);
-                            outStream.println(ex.getMessage());
-                            build.setResult(Result.FAILURE);
-                            return false;
-                        }
+        if (qaReportSettings.isLoginToQAV() && qaReportSettings.isPublishToQAV()) {
+            if (qaReportSettings.isQaUploadWhenStable() && buildResult.isWorseOrEqualTo(Result.UNSTABLE)) {
+                outStream.println("UPLOAD WARNING: QAV Upload cant be perform because build is Unstable");
+                log.log(Level.WARNING, "UPLOAD WARNING - QAV Upload cant be perform because build is Unstable");
+            } else {
+                if (!qaReportSettings.isQaUploadWhenStable() && !buildResult.isWorseOrEqualTo(Result.FAILURE)) {
+                    outStream.println("UPLOAD WARNING: Build is Unstable but upload will continue...");
+                }
+                outStream.println("UPLOAD INFO: QAV Upload...");
+                for (QAFrameworkRemoteReportUpload remoteReportUpload : remoteReportUploads) {
+                    try {
+                        performUpload(build, remoteToolCheck, remoteReportUpload);
+                    } catch (PrqaException ex) {
+                        log.log(Level.SEVERE, ex.getMessage(), ex);
+                        outStream.println(ex.getMessage());
+                        build.setResult(Result.FAILURE);
+                        return false;
                     }
                 }
             }
-        } else {
-            return false;
         }
 
         outStream.println("\n----------------------BUILD Results-----------------------\n");
