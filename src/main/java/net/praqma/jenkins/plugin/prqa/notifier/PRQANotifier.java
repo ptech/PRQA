@@ -863,15 +863,13 @@ public class PRQANotifier extends Publisher implements Serializable {
         PRQAReading previousStableBuildResult = previousBuildResultTuple != null ? previousBuildResultTuple.getFirst()
                 : null;
 
-        boolean res = true;
-
         log.fine("thresholdsDesc is null: " + (thresholdsDesc == null));
         if (thresholdsDesc != null) {
             log.fine("thresholdsDescSize: " + thresholdsDesc.size());
         }
 
-        res = evaluate(previousStableBuildResult, thresholdsDesc, currentBuild);
-        log.fine("Evaluated to: " + res);
+        boolean thresholdEvalResult = evaluate(previousStableBuildResult, thresholdsDesc, currentBuild);
+        log.fine("Evaluated to: " + thresholdEvalResult);
 
         PRQABuildAction action = new PRQABuildAction(build);
         action.setResult(currentBuild);
@@ -882,7 +880,7 @@ public class PRQANotifier extends Publisher implements Serializable {
         if (buildResult == null) {
             return false;
         }
-        if (!res && !buildResult.isWorseOrEqualTo(FAILURE)) {
+        if (!thresholdEvalResult && !buildResult.isWorseOrEqualTo(FAILURE)) {
             build.setResult(UNSTABLE);
         }
 
