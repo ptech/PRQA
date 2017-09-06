@@ -986,7 +986,8 @@ public class PRQANotifier extends Publisher implements Serializable {
                     qaFrameworkPostBuildActionSetup.analysisSettings,
                     qaFrameworkPostBuildActionSetup.stopWhenFail,
                     qaFrameworkPostBuildActionSetup.generatePreprocess,
-                    qaFrameworkPostBuildActionSetup.assembleSupportAnalytics);
+                    qaFrameworkPostBuildActionSetup.assembleSupportAnalytics,
+                    qaFrameworkPostBuildActionSetup.generateReportOnAnalysisError);
         }
         throw new PrqaSetupException("Please set a project in Qa Framework section configuration!");
     }
