@@ -891,7 +891,7 @@ public class PRQANotifier extends Publisher implements Serializable {
                 outStream.println("UPLOAD WARNING: QAV Upload cant be perform because build is Unstable");
                 log.log(WARNING, "UPLOAD WARNING - QAV Upload cant be perform because build is Unstable");
             } else {
-                if (!qaReportSettings.isQaUploadWhenStable() && !buildResult.isWorseOrEqualTo(FAILURE)) {
+                if (buildResult.isWorseOrEqualTo(UNSTABLE)) {
                     outStream.println("UPLOAD WARNING: Build is Unstable but upload will continue...");
                 }
                 outStream.println("UPLOAD INFO: QAV Upload...");
