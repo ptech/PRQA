@@ -124,12 +124,12 @@ public class QAFrameworkRemoteReport extends MasterToSlaveFileCallable<PRQACompl
         } catch (PrqaException exception) {
             throw new IOException(exception.getMessage(), exception);
         } catch (Exception ex) {
-            throw new IOException(ex.getMessage());
+            throw new IOException(ex.getMessage(), ex);
         } finally {
             try {
                 report.unsetCustomLicenseServer(customServerWasApplied, out);
             } catch (PrqaException e) {
-                e.printStackTrace(out);
+                throw new IOException(e.getMessage(), e);
             }
         }
     }
