@@ -373,12 +373,16 @@ public class PRQANotifier extends Publisher implements Serializable {
         Result buildResult = build.getResult();
 
         if (buildResult == null) {
-            log.log(WARNING, "Build result is unavailable at this point");
-        } else {
-            if (buildResult.isWorseOrEqualTo(FAILURE) && runWhenSuccess) {
-                build.setResult(FAILURE);
+            log.log(WARNING, "Build result is unavailable at this point.");
+            outStream.println("Build result is unavailable at this point. Will not proceed.");
+            return false;
+        } else if (buildResult.isWorseOrEqualTo(FAILURE)){
+            log.log(WARNING, "Build is marked as failure.");
+            if (runWhenSuccess) {
+                outStream.println("Build is marked as failure and PRQA Analysis will not proceed.");
                 return false;
             }
+            outStream.println("Build is marked as failure but PRQA Analysis will proceed.");
         }
 
         if (sourceQAFramework != null && sourceQAFramework instanceof QAFrameworkPostBuildActionSetup) {
@@ -871,13 +875,11 @@ public class PRQANotifier extends Publisher implements Serializable {
         boolean thresholdEvalResult = evaluate(previousStableBuildResult, thresholdsDesc, currentBuild);
         log.fine("Evaluated to: " + thresholdEvalResult);
 
-        PRQABuildAction action = new PRQABuildAction(build);
-        action.setResult(currentBuild);
-        action.setPublisher(this);
-
         Result buildResult = build.getResult();
 
         if (buildResult == null) {
+            log.log(WARNING, "Build result is unavailable at this point.");
+            outStream.println("Build result is unavailable at this point. Will not proceed.");
             return false;
         }
         if (!thresholdEvalResult && !buildResult.isWorseOrEqualTo(FAILURE)) {
@@ -886,13 +888,13 @@ public class PRQANotifier extends Publisher implements Serializable {
 
         if (qaReportSettings.isLoginToQAV() && qaReportSettings.isPublishToQAV()) {
             if (qaReportSettings.isQaUploadWhenStable() && buildResult.isWorseOrEqualTo(UNSTABLE)) {
-                outStream.println("UPLOAD WARNING: QAV Upload cant be perform because build is Unstable");
+                outStream.println("Upload warning: QAV Upload cant be perform because build is Unstable");
                 log.log(WARNING, "UPLOAD WARNING - QAV Upload cant be perform because build is Unstable");
             } else {
                 if (buildResult.isWorseOrEqualTo(UNSTABLE)) {
-                    outStream.println("UPLOAD WARNING: Build is Unstable but upload will continue...");
+                    outStream.println("Upload warning: Build is Unstable but upload will continue...");
                 }
-                outStream.println("UPLOAD INFO: QAV Upload...");
+                outStream.println("Upload info: QAV Upload...");
                 for (QAFrameworkRemoteReportUpload remoteReportUpload : remoteReportUploads) {
                     try {
                         performUpload(build, remoteToolCheck, remoteReportUpload);
@@ -917,6 +919,9 @@ public class PRQANotifier extends Publisher implements Serializable {
         outStream.println(Messages.PRQANotifier_ScannedValues());
         outStream.println(currentBuild);
 
+        PRQABuildAction action = new PRQABuildAction(build);
+        action.setResult(currentBuild);
+        action.setPublisher(this);
         build.addAction(action);
         return true;
     }
