@@ -142,25 +142,25 @@ public class PRQANotifier extends Publisher implements Serializable {
      */
     private boolean evaluate(PRQAReading previousStableComplianceStatus, List<? extends AbstractThreshold> thresholds,
                              PRQAComplianceStatus currentComplianceStatus) {
-        PRQAComplianceStatus previousComplianceStatus = (PRQAComplianceStatus) previousStableComplianceStatus;
-        HashMap<StatusCategory, Number> tholds = new HashMap<StatusCategory, Number>();
-        if (thresholds == null) {
-            return true;
-        }
-        for (AbstractThreshold threshold : thresholds) {
-            if (threshold.improvement) {
-                if (!isBuildStableForContinuousImprovement(threshold, currentComplianceStatus, previousComplianceStatus)) {
-                    return false;
-                }
-            } else {
-                addThreshold(threshold, tholds);
-                currentComplianceStatus.setThresholds(tholds);
-                if (!threshold.validate(previousComplianceStatus, currentComplianceStatus, threshholdlevel)) {
-                    return false;
+        boolean success = true;
+        if (thresholds != null) {
+            PRQAComplianceStatus previousComplianceStatus = (PRQAComplianceStatus) previousStableComplianceStatus;
+            HashMap<StatusCategory, Number> tholds = new HashMap<StatusCategory, Number>();
+            for (AbstractThreshold threshold : thresholds) {
+                if (threshold.improvement) {
+                    if (!isBuildStableForContinuousImprovement(threshold, currentComplianceStatus, previousComplianceStatus)) {
+                        success = false;
+                    }
+                } else {
+                    addThreshold(threshold, tholds);
+                    currentComplianceStatus.setThresholds(tholds);
+                    if (!threshold.validate(previousComplianceStatus, currentComplianceStatus, threshholdlevel)) {
+                        success = false;
+                    }
                 }
             }
         }
-        return true;
+        return success;
     }
 
     private boolean isBuildStableForContinuousImprovement(AbstractThreshold threshold,
