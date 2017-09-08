@@ -424,7 +424,7 @@ public class QAFrameworkPostBuildActionSetup extends PostBuildActionSetup {
                 return FormValidation.errorWithMarkup(Messages.PRQANotifier_NotEmptyValue("Max. Number of Threads for Analysis"));
             }
             try {
-                Integer parsedValue = Integer.parseInt(maxNumThreads);
+                final Integer parsedValue = Integer.parseInt(maxNumThreads);
                 if (parsedValue <= minValue) {
                     return FormValidation.error(Messages.PRQANotifier_WrongIntegerGreatherThan(minValue));
                 }
