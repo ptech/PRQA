@@ -5,8 +5,7 @@
         .not-impl {
             font-style:italic;
         }
-        .selectorHelper,
-        .selectorHelper + table > tbody > tr.optional-block-start.row-group-start.row-set-start {
+        .selectorHelper + table tr.optional-block-start {
             display:none;
         }
     </style>
