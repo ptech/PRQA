@@ -108,6 +108,8 @@ public class QAFrameworkPostBuildActionSetup extends PostBuildActionSetup {
         this.downloadUnifiedProjectDefinition = downloadUnifiedProjectDefinition;
         this.unifiedProjectName = unifiedProjectName;
         this.performCrossModuleAnalysis = performCrossModuleAnalysis;
+        this.stopWhenFail = stopWhenFail;
+        this.reuseCmaDb = reuseCmaDb;
         this.enableDependencyMode = enableDependencyMode;
         this.generateReport = generateReport;
         this.publishToQAV = publishToQAV;
@@ -122,8 +124,6 @@ public class QAFrameworkPostBuildActionSetup extends PostBuildActionSetup {
         this.generateMdr = generateMdr;
         this.generateSup = generateSup;
         this.analysisSettings = analysisSettings;
-        this.stopWhenFail = stopWhenFail;
-        this.reuseCmaDb = reuseCmaDb;
         this.useDiskStorage = useDiskStorage;
         this.customCpuThreads = customCpuThreads;
         this.maxNumThreads = maxNumThreads;
