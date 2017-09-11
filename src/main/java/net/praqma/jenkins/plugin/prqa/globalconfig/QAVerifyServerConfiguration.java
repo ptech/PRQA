@@ -7,8 +7,11 @@ package net.praqma.jenkins.plugin.prqa.globalconfig;
 import hudson.Extension;
 import hudson.model.AbstractDescribableImpl;
 import hudson.model.Descriptor;
+import hudson.util.FormValidation;
+import net.praqma.jenkins.plugin.prqa.notifier.Messages;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
+import org.kohsuke.stapler.QueryParameter;
 
 import javax.annotation.Nonnull;
 import java.io.Serializable;
@@ -205,6 +208,41 @@ public class QAVerifyServerConfiguration
         @Override
         public String getDisplayName() {
             return "QA·Verify Server";
+        }
+
+        public FormValidation doCheckConfigurationName(@QueryParameter String value) {
+            return FormValidation.validateRequired(value);
+        }
+
+        public FormValidation doCheckHostName(@QueryParameter String value) {
+            return FormValidation.validateRequired(value);
+        }
+
+        public FormValidation doCheckPortNumber(@QueryParameter String value) {
+            return checkValidPort(value);
+        }
+
+        public FormValidation doCheckUserName(@QueryParameter String value) {
+            return FormValidation.validateRequired(value);
+        }
+
+        public FormValidation doCheckViewerPortNumber(@QueryParameter String value) {
+            return checkValidPort(value);
+        }
+
+        private FormValidation checkValidPort(@QueryParameter String value) {
+            Integer valueOf;
+            try {
+                valueOf = Integer.valueOf(value);
+            } catch (NumberFormatException e) {
+                valueOf = -1;
+            }
+
+            if (valueOf <= 0 || valueOf > 0x0000FFFF) {
+                return FormValidation.error(Messages.QAVerifyServerConfiguration_InvalidPort());
+            }
+
+            return FormValidation.ok();
         }
     }
 }
