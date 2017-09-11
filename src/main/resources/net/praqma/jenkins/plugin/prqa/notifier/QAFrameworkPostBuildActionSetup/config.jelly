@@ -105,6 +105,20 @@
                                      help="/plugin/prqa-plugin/config/help-qaCMA.html"
                                      checked="${instance.performCrossModuleAnalysis}"
                                      inline="true">
+                        <f:entry title="${%Reuse CMA Database}"
+                                 field="reuseCmaDb"
+                                 help="/plugin/prqa-plugin/config/help-qaReuseCmaDb.html">
+                            <f:checkbox name="reuseCmaDb"
+                                        value="${instance.reuseCmaDb}"
+                                        checked="${instance.reuseCmaDb}"/>
+                        </f:entry>
+                        <f:entry title="${%Use Temporary Disk Storage for CMA}"
+                                 field="useDiskStorage"
+                                 help="/plugin/prqa-plugin/config/help-qaUseDiskStorage.html">
+                            <f:checkbox name="useDiskStorage"
+                                        value="${instance.useDiskStorage}"
+                                        checked="${instance.useDiskStorage}"/>
+                        </f:entry>
                     </f:optionalBlock>
                 </f:block>
 
@@ -135,20 +149,6 @@
                             <f:checkbox name="stopWhenFail"
                                         value="${instance.stopWhenFail}"
                                         checked="${instance.stopWhenFail}"/>
-                        </f:entry>
-                        <f:entry title="${%Reuse CMA Database}"
-                                 field="reuseCmaDb"
-                                 help="/plugin/prqa-plugin/config/help-qaReuseCmaDb.html">
-                            <f:checkbox name="reuseCmaDb"
-                                        value="${instance.reuseCmaDb}"
-                                        checked="${instance.reuseCmaDb}"/>
-                        </f:entry>
-                        <f:entry title="${%Use Temporary Disk Storage for CMA}"
-                                 field="useDiskStorage"
-                                 help="/plugin/prqa-plugin/config/help-qaUseDiskStorage.html">
-                            <f:checkbox name="useDiskStorage"
-                                        value="${instance.useDiskStorage}"
-                                        checked="${instance.useDiskStorage}"/>
                         </f:entry>
                         <f:optionalBlock name="customCpuThreads"
                                          title="Set Threads used for analysis"
