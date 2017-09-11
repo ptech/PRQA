@@ -20,9 +20,6 @@ import java.util.Objects;
 /**
  * @author Praqma
  */
-@SuppressWarnings({"WeakerAccess",
-                   "unused"
-                  })
 public class QAVerifyServerConfiguration
         extends AbstractDescribableImpl<QAVerifyServerConfiguration>
         implements Serializable {
