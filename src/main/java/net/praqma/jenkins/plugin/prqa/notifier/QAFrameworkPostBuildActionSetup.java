@@ -49,6 +49,8 @@ public class QAFrameworkPostBuildActionSetup extends PostBuildActionSetup {
     public final String customLicenseServerAddress;
     public boolean downloadUnifiedProjectDefinition;
     public boolean performCrossModuleAnalysis;
+    public boolean reuseCmaDb;
+    public boolean useDiskStorage;
     public boolean enableDependencyMode;
     public boolean generateReport;
     public boolean publishToQAV;
@@ -64,8 +66,6 @@ public class QAFrameworkPostBuildActionSetup extends PostBuildActionSetup {
     public boolean generateSup;
     public boolean analysisSettings;
     public boolean stopWhenFail;
-    public boolean reuseCmaDb;
-    public boolean useDiskStorage;
     public boolean customCpuThreads;
     public String maxNumThreads;
     public boolean generatePreprocess;
@@ -79,6 +79,8 @@ public class QAFrameworkPostBuildActionSetup extends PostBuildActionSetup {
                                            boolean downloadUnifiedProjectDefinition,
                                            String unifiedProjectName,
                                            boolean performCrossModuleAnalysis,
+                                           boolean reuseCmaDb,
+                                           boolean useDiskStorage,
                                            boolean enableDependencyMode,
                                            boolean generateReport,
                                            boolean publishToQAV,
@@ -94,8 +96,6 @@ public class QAFrameworkPostBuildActionSetup extends PostBuildActionSetup {
                                            boolean generateSup,
                                            boolean analysisSettings,
                                            boolean stopWhenFail,
-                                           boolean reuseCmaDb,
-                                           boolean useDiskStorage,
                                            boolean customCpuThreads,
                                            String maxNumThreads,
                                            boolean generatePreprocess,
