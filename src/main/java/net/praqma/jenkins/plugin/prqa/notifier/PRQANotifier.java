@@ -992,11 +992,9 @@ public class PRQANotifier extends Publisher implements Serializable {
 
         try {
             QaFrameworkVersion qaFrameworkVersion = new QaFrameworkVersion(workspace.act(remoteToolCheck));
-
-            if (!isQafVersionSupported(qaFrameworkVersion)) {
+            if (!qaFrameworkVersion.isQafVersionSupported(outStream)) {
                 throw new PrqaException("Build failure. Please upgrade to a newer version of PRQA Framework");
             }
-
             remoteReport.setQaFrameworkVersion(qaFrameworkVersion);
             currentBuild = workspace.act(remoteReport);
             currentBuild.setMessagesWithinThresholdForEachMessageGroup(threshholdlevel);
@@ -1021,8 +1019,7 @@ public class PRQANotifier extends Publisher implements Serializable {
 
         try {
             QaFrameworkVersion qaFrameworkVersion = new QaFrameworkVersion(workspace.act(remoteToolCheck));
-            success = isQafVersionSupported(qaFrameworkVersion);
-            if (!success) {
+            if (!qaFrameworkVersion.isQafVersionSupported(outStream)) {
                 throw new PrqaException("Build failure. Please upgrade to a newer version of PRQA Framework");
             }
             remoteReportUpload.setQaFrameworkVersion(qaFrameworkVersion);
@@ -1032,21 +1029,6 @@ public class PRQANotifier extends Publisher implements Serializable {
         } catch (InterruptedException ex) {
             throw new PrqaException(ex);
         }
-    }
-
-    private boolean isQafVersionSupported(QaFrameworkVersion qaFrameworkVersion) {
-        String shortVersion = qaFrameworkVersion.getVersionShortFormat();
-        String qafVersion = shortVersion.substring(shortVersion.lastIndexOf(" ") + 1);
-
-        outStream.println("PRQA Source Code Analysis Framework " + qafVersion);
-
-        if (!qaFrameworkVersion.isQAFVersionSupported()) {
-            outStream.println(String.format(
-                    "Your QA·CLI version is %s.In order to use our product install a newer version of PRQA·Framework!",
-                    qaFrameworkVersion.getQaFrameworkVersion()));
-            return false;
-        }
-        return true;
     }
 
     /*
