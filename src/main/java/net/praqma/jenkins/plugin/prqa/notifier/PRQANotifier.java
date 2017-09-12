@@ -992,7 +992,7 @@ public class PRQANotifier extends Publisher implements Serializable {
 
         try {
             QaFrameworkVersion qaFrameworkVersion = new QaFrameworkVersion(workspace.act(remoteToolCheck));
-            if (!qaFrameworkVersion.isQafVersionSupported(outStream)) {
+            if (!isQafVersionSupported(qaFrameworkVersion)) {
                 throw new PrqaException("Build failure. Please upgrade to a newer version of PRQA Framework");
             }
             remoteReport.setQaFrameworkVersion(qaFrameworkVersion);
@@ -1015,11 +1015,9 @@ public class PRQANotifier extends Publisher implements Serializable {
             throw new IOException("Invalid workspace. Cannot continue.");
         }
 
-        boolean success;
-
         try {
             QaFrameworkVersion qaFrameworkVersion = new QaFrameworkVersion(workspace.act(remoteToolCheck));
-            if (!qaFrameworkVersion.isQafVersionSupported(outStream)) {
+            if (!isQafVersionSupported(qaFrameworkVersion)) {
                 throw new PrqaException("Build failure. Please upgrade to a newer version of PRQA Framework");
             }
             remoteReportUpload.setQaFrameworkVersion(qaFrameworkVersion);
@@ -1029,6 +1027,17 @@ public class PRQANotifier extends Publisher implements Serializable {
         } catch (InterruptedException ex) {
             throw new PrqaException(ex);
         }
+    }
+
+    private boolean isQafVersionSupported(QaFrameworkVersion qaFrameworkVersion) {
+        outStream.println("PRQA Source Code Analysis Framework " + qaFrameworkVersion.getQAFrameworkVersion());
+        if (!qaFrameworkVersion.isQAFVersionSupported()) {
+            outStream.println(String.format(
+                    "Your QA·CLI version is %s.In order to use our product install a newer version of PRQA·Framework!",
+                    qaFrameworkVersion.getQAFrameworkVersion()));
+            return false;
+        }
+        return true;
     }
 
     /*
