@@ -156,6 +156,14 @@
                                 <f:textbox value="${instance.uploadSnapshotName}"/>
                             </f:entry>
 
+                            <f:entry title="${%Add Build Number to Snapshot Name}"
+                                     field="addBuildNumber">
+                                <f:checkbox name="addBuildNumber"
+                                            value="${instance.addBuildNumber}"
+                                            checked="${instance.addBuildNumber}"/>
+                            </f:entry>
+
+
                             <f:entry title="${%Upload Source Code}"
                                      field="uploadSourceCode">
                                 <f:select/>
