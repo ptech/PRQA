@@ -61,6 +61,7 @@ import java.util.logging.Logger;
 
 import static hudson.model.Result.*;
 import static java.util.logging.Level.*;
+import static net.praqma.prqa.QaFrameworkVersion.MINOR_SUPPORTED_VERSION;
 import static net.praqma.prqa.reports.ReportType.*;
 
 //TODO: Remove all the deprecated fields in the release for the new PRQA API
@@ -1034,8 +1035,11 @@ public class PRQANotifier extends Publisher implements Serializable {
         outStream.println("PRQA Source Code Analysis Framework " + qaFrameworkVersion.getQaFrameworkVersion());
         if (!qaFrameworkVersion.isVersionSupported()) {
             outStream.println(String.format(
-                    "Your QA·CLI version is %s. In order to use our product install a newer version of PRQA·Framework!",
-                    qaFrameworkVersion.getQaFrameworkVersion()));
+                    "Your QA·CLI version is %s (%s). In order to use our product install a version of " +
+                            "PRQA·Framework greater or equal to %s!",
+                    qaFrameworkVersion.getQaFrameworkShortVersion(),
+                    qaFrameworkVersion.getQaFrameworkVersion(),
+                    MINOR_SUPPORTED_VERSION));
             return false;
         }
         return true;
