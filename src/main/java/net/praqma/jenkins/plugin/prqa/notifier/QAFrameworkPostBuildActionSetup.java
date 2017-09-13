@@ -70,6 +70,7 @@ public class QAFrameworkPostBuildActionSetup extends PostBuildActionSetup {
     public String maxNumThreads;
     public boolean generatePreprocess;
     public boolean assembleSupportAnalytics;
+    public boolean generateReportOnAnalysisError;
 
     @DataBoundConstructor
     public QAFrameworkPostBuildActionSetup(String qaInstallation,
@@ -99,7 +100,8 @@ public class QAFrameworkPostBuildActionSetup extends PostBuildActionSetup {
                                            boolean customCpuThreads,
                                            String maxNumThreads,
                                            boolean generatePreprocess,
-                                           boolean assembleSupportAnalytics) {
+                                           boolean assembleSupportAnalytics,
+                                           boolean generateReportOnAnalysisError) {
 
         this.qaInstallation = qaInstallation;
         this.qaProject = qaProject;
@@ -124,11 +126,13 @@ public class QAFrameworkPostBuildActionSetup extends PostBuildActionSetup {
         this.generateMdr = generateMdr;
         this.generateSup = generateSup;
         this.analysisSettings = analysisSettings;
+        this.stopWhenFail = stopWhenFail;
         this.useDiskStorage = useDiskStorage;
         this.customCpuThreads = customCpuThreads;
         this.maxNumThreads = maxNumThreads;
         this.generatePreprocess = generatePreprocess;
         this.assembleSupportAnalytics = assembleSupportAnalytics;
+        this.generateReportOnAnalysisError = generateReportOnAnalysisError;
     }
 
     public List<String> getChosenServers() {
@@ -295,6 +299,10 @@ public class QAFrameworkPostBuildActionSetup extends PostBuildActionSetup {
         this.maxNumThreads = maxNumThreads;
     }
 
+    public void setCustomCpuThreads(boolean customCpuThreads) {
+        this.customCpuThreads = customCpuThreads;
+    }
+
     public boolean isAnalysisSettings() {
         return analysisSettings;
     }
@@ -311,6 +319,10 @@ public class QAFrameworkPostBuildActionSetup extends PostBuildActionSetup {
         return assembleSupportAnalytics;
     }
 
+    public boolean isGenerateReportOnAnalysisError() {
+        return generateReportOnAnalysisError;
+    }
+
     public boolean isReuseCmaDb() {
         return reuseCmaDb;
     }
@@ -325,10 +337,6 @@ public class QAFrameworkPostBuildActionSetup extends PostBuildActionSetup {
 
     public boolean isCustomCpuThreads() {
         return customCpuThreads;
-    }
-
-    public void setCustomCpuThreads(boolean customCpuThreads) {
-        this.customCpuThreads = customCpuThreads;
     }
 
     @Extension
