@@ -806,7 +806,7 @@ public class PRQANotifier extends Publisher implements Serializable {
 
         qaFrameworkInstallationConfiguration = qaFrameworkInstallationConfiguration.forNode(node, listener);
 
-        outStream.println(VersionInfo.getPluginVersion());
+        outStream.println(String.format("Programming Research Quality Assurance Plugin version %s", VersionInfo.getPluginVersion()));
 
         PRQAToolSuite suite = qaFrameworkInstallationConfiguration;
 
@@ -1038,7 +1038,7 @@ public class PRQANotifier extends Publisher implements Serializable {
 
         if (!qaFrameworkVersion.isVersionSupported()) {
             outStream.println(String.format(
-                    "In order to use our product please install a version of PRQA·Framework greater or equal to %s!",
+                    "ERROR: In order to use the PRQA plugin please install a version of PRQA·Framework greater or equal to %s!",
                     MINOR_SUPPORTED_VERSION));
             return false;
         }
