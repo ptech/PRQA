@@ -27,6 +27,8 @@ import hudson.Extension;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
 import jenkins.model.Jenkins;
+import lombok.Getter;
+import lombok.Setter;
 import net.praqma.jenkins.plugin.prqa.globalconfig.PRQAGlobalConfig;
 import net.praqma.jenkins.plugin.prqa.globalconfig.QAVerifyServerConfiguration;
 import net.praqma.jenkins.plugin.prqa.setup.QAFrameworkInstallationConfiguration;
@@ -40,33 +42,35 @@ import org.kohsuke.stapler.StaplerRequest;
 import java.util.Arrays;
 import java.util.List;
 
+@Getter
+@Setter
 public class QAFrameworkPostBuildActionSetup extends PostBuildActionSetup {
 
-    public String qaInstallation;
-    public String qaProject;
-    public String unifiedProjectName;
-    public final boolean useCustomLicenseServer;
-    public final String customLicenseServerAddress;
-    public boolean downloadUnifiedProjectDefinition;
-    public boolean performCrossModuleAnalysis;
-    public boolean enableDependencyMode;
-    public boolean generateReport;
-    public boolean publishToQAV;
-    public boolean loginToQAV;
-    public List<String> chosenServers;
-    public boolean uploadWhenStable;
-    public String qaVerifyProjectName;
-    public String uploadSnapshotName;
-    public String buildNumber;
-    public String uploadSourceCode;
-    public boolean generateCrr;
-    public boolean generateMdr;
-    public boolean generateSup;
-    public boolean analysisSettings;
-    public boolean stopWhenFail;
-    public boolean generatePreprocess;
-    public boolean assembleSupportAnalytics;
-    public boolean generateReportOnAnalysisError;
+    private String qaInstallation;
+    private String qaProject;
+    private String unifiedProjectName;
+    private boolean useCustomLicenseServer;
+    private String customLicenseServerAddress;
+    private boolean downloadUnifiedProjectDefinition;
+    private boolean performCrossModuleAnalysis;
+    private boolean enableDependencyMode;
+    private boolean generateReport;
+    private boolean publishToQAV;
+    private boolean loginToQAV;
+    private List<String> chosenServers;
+    private boolean uploadWhenStable;
+    private String qaVerifyProjectName;
+    private String uploadSnapshotName;
+    private String buildNumber;
+    private String uploadSourceCode;
+    private boolean generateCrr;
+    private boolean generateMdr;
+    private boolean generateSup;
+    private boolean analysisSettings;
+    private boolean stopWhenFail;
+    private boolean generatePreprocess;
+    private boolean assembleSupportAnalytics;
+    private boolean generateReportOnAnalysisError;
 
     @DataBoundConstructor
     public QAFrameworkPostBuildActionSetup(String qaInstallation,
@@ -120,178 +124,6 @@ public class QAFrameworkPostBuildActionSetup extends PostBuildActionSetup {
         this.generatePreprocess = generatePreprocess;
         this.assembleSupportAnalytics = assembleSupportAnalytics;
         this.generateReportOnAnalysisError = generateReportOnAnalysisError;
-    }
-
-    public List<String> getChosenServers() {
-        return chosenServers;
-    }
-
-    public void setChosenServers(List<String> chosenServers) {
-        this.chosenServers = chosenServers;
-    }
-
-    public boolean isPublishToQAV() {
-        return publishToQAV;
-    }
-
-    public boolean isLoginToQAV() {
-        return loginToQAV;
-    }
-
-    public boolean isUploadWhenStable() {
-        return uploadWhenStable;
-    }
-
-    public void setPublishToQAV(boolean publishToQAV) {
-        this.publishToQAV = publishToQAV;
-    }
-
-    public void setLoginToQAV(boolean loginToQAV) {
-        this.loginToQAV = loginToQAV;
-    }
-
-    public void setQaInstallation(String qaInstallation) {
-        this.qaInstallation = qaInstallation;
-    }
-
-    public void setQaProject(String qaProject) {
-        this.qaProject = qaProject;
-    }
-
-    public void setDownloadUnifiedProjectDefinition(boolean downloadUnifiedProjectDefinition) {
-        this.downloadUnifiedProjectDefinition = downloadUnifiedProjectDefinition;
-    }
-
-    public void setPerformCrossModuleAnalysis(boolean performCrossModuleAnalysis) {
-        this.performCrossModuleAnalysis = performCrossModuleAnalysis;
-    }
-
-    public void setEnableDependencyMode(boolean enableDependencyMode) {
-        this.enableDependencyMode = enableDependencyMode;
-    }
-
-    public void setUploadWhenStable(boolean uploadWhenStable) {
-        this.uploadWhenStable = uploadWhenStable;
-    }
-
-    public String getQaInstallation() {
-        return qaInstallation;
-    }
-
-    public String getQaProject() {
-        return qaProject;
-    }
-
-    public String getUnifiedProjectName() {
-        return unifiedProjectName;
-    }
-
-    public String getVerifySnapshotName() {
-        return uploadSnapshotName;
-    }
-
-    public void setUnifiedProjectName(String uProjectName) {
-        unifiedProjectName = uProjectName;
-    }
-
-    public boolean isDownloadUnifiedProjectDefinition() {
-        return downloadUnifiedProjectDefinition;
-    }
-
-    public boolean isPerformCrossModuleAnalysis() {
-        return performCrossModuleAnalysis;
-    }
-
-    public boolean isEnableDependencyMode() {
-        return enableDependencyMode;
-    }
-
-    public boolean isGenerateReport() {
-        return generateReport;
-    }
-
-    public void setGenerateReport(boolean generateReport) {
-        this.generateReport = generateReport;
-    }
-
-    public String getUploadSourceCode() {
-        return uploadSourceCode;
-    }
-
-    public String getVerifyProjectName() {
-        return qaVerifyProjectName;
-    }
-
-    public boolean isGenerateCrr() {
-        return generateCrr;
-    }
-
-    public boolean isGenerateMdr() {
-        return generateMdr;
-    }
-
-    public boolean isGenerateSup() {
-        return generateSup;
-    }
-
-    public void setGenerateCrr(boolean generateCrr) {
-        this.generateCrr = generateCrr;
-    }
-
-    public void setGenerateMdr(boolean generateMdr) {
-        this.generateMdr = generateMdr;
-    }
-
-    public void setGenerateSup(boolean generateSup) {
-        this.generateSup = generateSup;
-    }
-
-    public void setUploadSourceCode(String uploadSource) {
-        uploadSourceCode = uploadSource;
-    }
-
-    public void setVerifyProjectName(String qaVerifyProject) {
-        qaVerifyProjectName = qaVerifyProject;
-    }
-
-    public void setVerifySnapshotName(String qaVerifySnapshotName) {
-        uploadSnapshotName = qaVerifySnapshotName;
-    }
-
-    public void setAnalysisSettings(boolean analysisSettings) {
-        this.analysisSettings = analysisSettings;
-    }
-
-    public void setStopWhenFail(boolean stopWhenFail) {
-        this.stopWhenFail = stopWhenFail;
-    }
-
-    public void setGeneratePreprocess(boolean generatePreprocess) {
-        this.generatePreprocess = generatePreprocess;
-    }
-
-    public void setAssembleSupportAnalytics(boolean assembleSupportAnalytics) {
-        this.assembleSupportAnalytics = assembleSupportAnalytics;
-    }
-
-    public boolean isAnalysisSettings() {
-        return analysisSettings;
-    }
-
-    public boolean isStopWhenFail() {
-        return stopWhenFail;
-    }
-
-    public boolean isGeneratePreprocess() {
-        return generatePreprocess;
-    }
-
-    public boolean isAssembleSupportAnalytics() {
-        return assembleSupportAnalytics;
-    }
-
-    public boolean isGenerateReportOnAnalysisError() {
-        return generateReportOnAnalysisError;
     }
 
     @Extension

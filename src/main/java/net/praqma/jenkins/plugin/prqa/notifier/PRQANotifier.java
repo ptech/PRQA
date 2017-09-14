@@ -56,7 +56,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.io.Serializable;
 import java.util.*;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static hudson.model.Result.*;
@@ -791,12 +790,12 @@ public class PRQANotifier extends Publisher implements Serializable {
 
         QAFrameworkPostBuildActionSetup qaFrameworkPostBuildActionSetup = (QAFrameworkPostBuildActionSetup) sourceQAFramework;
         QAFrameworkInstallationConfiguration qaFrameworkInstallationConfiguration = QAFrameworkInstallationConfiguration
-                .getInstallationByName(qaFrameworkPostBuildActionSetup.qaInstallation);
+                .getInstallationByName(qaFrameworkPostBuildActionSetup.getQaInstallation());
 
         if (qaFrameworkInstallationConfiguration == null) {
             String msg = String.format(
                     "The job uses a QA Framework installation (%s) that is misconfigured or no longer exists, please reconfigure.",
-                    qaFrameworkPostBuildActionSetup.qaInstallation);
+                    qaFrameworkPostBuildActionSetup.getQaInstallation());
             log.log(SEVERE, msg);
             outStream.println(msg);
             build.setResult(FAILURE);
@@ -832,9 +831,9 @@ public class PRQANotifier extends Publisher implements Serializable {
 
         Collection<QAFrameworkRemoteReportUpload> remoteReportUploads = new ArrayList<>();
 
-        if (qaFrameworkPostBuildActionSetup.chosenServers != null &&
-                !qaFrameworkPostBuildActionSetup.chosenServers.isEmpty()) {
-            for (String chosenServer : qaFrameworkPostBuildActionSetup.chosenServers) {
+        if (qaFrameworkPostBuildActionSetup.getChosenServers() != null &&
+                !qaFrameworkPostBuildActionSetup.getChosenServers().isEmpty()) {
+            for (String chosenServer : qaFrameworkPostBuildActionSetup.getChosenServers()) {
                 QAVerifyServerSettings qaVerifySettings = setQaVerifyServerSettings(chosenServer);
                 QAFrameworkReport report = new QAFrameworkReport(qaReportSettings, qaVerifySettings, appSettings,
                         environmentVariables);
@@ -930,36 +929,36 @@ public class PRQANotifier extends Publisher implements Serializable {
             QAFrameworkPostBuildActionSetup qaFrameworkPostBuildActionSetup, AbstractBuild<?, ?> build, BuildListener listener)
             throws PrqaSetupException {
 
-        if (qaFrameworkPostBuildActionSetup.qaProject == null) {
+        if (qaFrameworkPostBuildActionSetup.getQaProject() == null) {
             throw new PrqaSetupException("Project configuration is missing. Please set a project in Qa Framework configuration section!");
         }
 
         return new QaFrameworkReportSettings(
-                qaFrameworkPostBuildActionSetup.qaInstallation,
-                qaFrameworkPostBuildActionSetup.useCustomLicenseServer,
-                PRQABuildUtils.normalizeWithEnv(qaFrameworkPostBuildActionSetup.customLicenseServerAddress, build, listener),
-                PRQABuildUtils.normalizeWithEnv(qaFrameworkPostBuildActionSetup.qaProject, build, listener),
-                qaFrameworkPostBuildActionSetup.downloadUnifiedProjectDefinition,
-                PRQABuildUtils.normalizeWithEnv(qaFrameworkPostBuildActionSetup.unifiedProjectName, build, listener),
-                qaFrameworkPostBuildActionSetup.enableDependencyMode,
-                qaFrameworkPostBuildActionSetup.performCrossModuleAnalysis,
-                qaFrameworkPostBuildActionSetup.generateReport,
-                qaFrameworkPostBuildActionSetup.publishToQAV,
-                qaFrameworkPostBuildActionSetup.loginToQAV,
+                qaFrameworkPostBuildActionSetup.getQaInstallation(),
+                qaFrameworkPostBuildActionSetup.isUseCustomLicenseServer(),
+                PRQABuildUtils.normalizeWithEnv(qaFrameworkPostBuildActionSetup.getCustomLicenseServerAddress(), build, listener),
+                PRQABuildUtils.normalizeWithEnv(qaFrameworkPostBuildActionSetup.getQaProject(), build, listener),
+                qaFrameworkPostBuildActionSetup.isDownloadUnifiedProjectDefinition(),
+                PRQABuildUtils.normalizeWithEnv(qaFrameworkPostBuildActionSetup.getUnifiedProjectName(), build, listener),
+                qaFrameworkPostBuildActionSetup.isEnableDependencyMode(),
+                qaFrameworkPostBuildActionSetup.isPerformCrossModuleAnalysis(),
+                qaFrameworkPostBuildActionSetup.isGenerateReport(),
+                qaFrameworkPostBuildActionSetup.isPublishToQAV(),
+                qaFrameworkPostBuildActionSetup.isLoginToQAV(),
                 product,
-                qaFrameworkPostBuildActionSetup.uploadWhenStable,
-                PRQABuildUtils.normalizeWithEnv(qaFrameworkPostBuildActionSetup.qaVerifyProjectName, build, listener),
-                PRQABuildUtils.normalizeWithEnv(qaFrameworkPostBuildActionSetup.uploadSnapshotName, build, listener),
+                qaFrameworkPostBuildActionSetup.isUploadWhenStable(),
+                PRQABuildUtils.normalizeWithEnv(qaFrameworkPostBuildActionSetup.getQaVerifyProjectName(), build, listener),
+                PRQABuildUtils.normalizeWithEnv(qaFrameworkPostBuildActionSetup.getUploadSnapshotName(), build, listener),
                 Integer.toString(build.getNumber()),
-                qaFrameworkPostBuildActionSetup.uploadSourceCode,
-                qaFrameworkPostBuildActionSetup.generateCrr,
-                qaFrameworkPostBuildActionSetup.generateMdr,
-                qaFrameworkPostBuildActionSetup.generateSup,
-                qaFrameworkPostBuildActionSetup.analysisSettings,
-                qaFrameworkPostBuildActionSetup.stopWhenFail,
-                qaFrameworkPostBuildActionSetup.generatePreprocess,
-                qaFrameworkPostBuildActionSetup.assembleSupportAnalytics,
-                qaFrameworkPostBuildActionSetup.generateReportOnAnalysisError);
+                qaFrameworkPostBuildActionSetup.getUploadSourceCode(),
+                qaFrameworkPostBuildActionSetup.isGenerateCrr(),
+                qaFrameworkPostBuildActionSetup.isGenerateMdr(),
+                qaFrameworkPostBuildActionSetup.isGenerateSup(),
+                qaFrameworkPostBuildActionSetup.isAnalysisSettings(),
+                qaFrameworkPostBuildActionSetup.isStopWhenFail(),
+                qaFrameworkPostBuildActionSetup.isGeneratePreprocess(),
+                qaFrameworkPostBuildActionSetup.isAssembleSupportAnalytics(),
+                qaFrameworkPostBuildActionSetup.isGenerateReportOnAnalysisError());
     }
 
     // Function to pull details from QAV Configuration.
