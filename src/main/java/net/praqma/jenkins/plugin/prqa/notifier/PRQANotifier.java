@@ -944,6 +944,9 @@ public class PRQANotifier extends Publisher implements Serializable {
                 PRQABuildUtils.normalizeWithEnv(qaFrameworkPostBuildActionSetup.unifiedProjectName, build, listener),
                 qaFrameworkPostBuildActionSetup.enableDependencyMode,
                 qaFrameworkPostBuildActionSetup.performCrossModuleAnalysis,
+                PRQABuildUtils.normalizeWithEnv(qaFrameworkPostBuildActionSetup.cmaProjectName, build, listener),
+                qaFrameworkPostBuildActionSetup.reuseCmaDb,
+                qaFrameworkPostBuildActionSetup.useDiskStorage,
                 qaFrameworkPostBuildActionSetup.generateReport,
                 qaFrameworkPostBuildActionSetup.publishToQAV,
                 qaFrameworkPostBuildActionSetup.loginToQAV,
@@ -958,6 +961,8 @@ public class PRQANotifier extends Publisher implements Serializable {
                 qaFrameworkPostBuildActionSetup.generateSup,
                 qaFrameworkPostBuildActionSetup.analysisSettings,
                 qaFrameworkPostBuildActionSetup.stopWhenFail,
+                qaFrameworkPostBuildActionSetup.customCpuThreads,
+                qaFrameworkPostBuildActionSetup.maxNumThreads,
                 qaFrameworkPostBuildActionSetup.generatePreprocess,
                 qaFrameworkPostBuildActionSetup.assembleSupportAnalytics,
                 qaFrameworkPostBuildActionSetup.generateReportOnAnalysisError);
