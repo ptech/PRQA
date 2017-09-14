@@ -3,7 +3,6 @@ package net.praqma.jenkins.plugin.prqa.notifier.slave.filesystem;
 import hudson.remoting.VirtualChannel;
 import jenkins.MasterToSlaveFileCallable;
 import net.praqma.prqa.exceptions.PrqaException;
-import net.praqma.prqa.products.PRQACommandBuilder;
 import net.praqma.prqa.reports.QAFrameworkReport;
 import org.apache.commons.io.FileUtils;
 
@@ -27,11 +26,14 @@ public class CopyReportsToWorkspace extends MasterToSlaveFileCallable<Boolean> i
     @Override
     public Boolean invoke(File f, VirtualChannel channel) throws IOException, InterruptedException {
 
-        final String root = extractRoot(f);
-        final String reportsPath = QAFrameworkReport.extractReportsPath(root);
-        final String qaFReports = root + File.separator + reportsPath;
+        final String reportsPath;
+        try {
+            reportsPath = QAFrameworkReport.extractReportsPath(f.getAbsolutePath(), qaProject);
+        } catch (PrqaException e) {
+            throw new IOException(e);
+        }
 
-        File[] files = new File(qaFReports).listFiles();
+        File[] files = new File(reportsPath).listFiles();
         assert files != null;
 
         for (File reportFile : files) {
@@ -48,15 +50,5 @@ public class CopyReportsToWorkspace extends MasterToSlaveFileCallable<Boolean> i
                 fileName.contains(SUR.name()) ||
                 fileName.contains(RCR.name()) ||
                 fileName.contains(MDR.name());
-    }
-
-    private String extractRoot(File f)
-            throws
-            IOException {
-        try {
-            return PRQACommandBuilder.resolveAbsOrRelativePath(f, qaProject);
-        } catch (PrqaException e) {
-            throw new IOException("Failed to find project root path");
-        }
     }
 }
