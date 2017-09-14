@@ -160,7 +160,8 @@
                                      field="addBuildNumber">
                                 <f:checkbox name="addBuildNumber"
                                             value="${instance.addBuildNumber}"
-                                            checked="${instance.addBuildNumber}"/>
+                                            checked="${instance.addBuildNumber}"
+                                            default="true"/>
                             </f:entry>
 
 
