@@ -48,10 +48,15 @@
 
                 <f:nested>
                     <f:optionalBlock name="performCrossModuleAnalysis"
-                                     title="Run Project Based CMA Analysis (prior to PRQA Framework 2.1.0)"
+                                     title="Run Project Based CMA Analysis"
                                      help="/plugin/prqa-plugin/config/help-qaCMA.html"
                                      checked="${instance.performCrossModuleAnalysis}"
                                      inline="true">
+                        <f:entry title="${%CMA project name}"
+                                 field="cmaProjectName"
+                                 help="/plugin/prqa-plugin/config/help-qaCMAProjectName.html">
+                            <f:textbox value="${instance.cmaProjectName}"/>
+                        </f:entry>
                         <f:entry title="${%Reuse CMA Database}"
                                  field="reuseCmaDb"
                                  help="/plugin/prqa-plugin/config/help-qaReuseCmaDb.html">
@@ -65,6 +70,7 @@
                             <f:checkbox name="useDiskStorage"
                                         value="${instance.useDiskStorage}"
                                         checked="${instance.useDiskStorage}"/>
+                        </f:entry>
                     </f:optionalBlock>
                 </f:nested>
 

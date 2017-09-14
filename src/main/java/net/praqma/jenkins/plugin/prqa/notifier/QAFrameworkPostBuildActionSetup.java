@@ -49,6 +49,7 @@ public class QAFrameworkPostBuildActionSetup extends PostBuildActionSetup {
     public final String customLicenseServerAddress;
     public boolean downloadUnifiedProjectDefinition;
     public boolean performCrossModuleAnalysis;
+    public String cmaProjectName;
     public boolean reuseCmaDb;
     public boolean useDiskStorage;
     public boolean enableDependencyMode;
@@ -80,6 +81,7 @@ public class QAFrameworkPostBuildActionSetup extends PostBuildActionSetup {
                                            boolean downloadUnifiedProjectDefinition,
                                            String unifiedProjectName,
                                            boolean performCrossModuleAnalysis,
+                                           String cmaProjectName,
                                            boolean reuseCmaDb,
                                            boolean useDiskStorage,
                                            boolean enableDependencyMode,
@@ -110,7 +112,7 @@ public class QAFrameworkPostBuildActionSetup extends PostBuildActionSetup {
         this.downloadUnifiedProjectDefinition = downloadUnifiedProjectDefinition;
         this.unifiedProjectName = unifiedProjectName;
         this.performCrossModuleAnalysis = performCrossModuleAnalysis;
-        this.stopWhenFail = stopWhenFail;
+        this.cmaProjectName = cmaProjectName;
         this.reuseCmaDb = reuseCmaDb;
         this.enableDependencyMode = enableDependencyMode;
         this.generateReport = generateReport;
@@ -339,6 +341,14 @@ public class QAFrameworkPostBuildActionSetup extends PostBuildActionSetup {
         return customCpuThreads;
     }
 
+    public String getCmaProjectName() {
+        return cmaProjectName;
+    }
+
+    public void setCmaProjectName(String cmaProjectName) {
+        this.cmaProjectName = cmaProjectName;
+    }
+
     @Extension
     public final static class DescriptorImpl extends PRQAReportSourceDescriptor<QAFrameworkPostBuildActionSetup> {
 
@@ -386,11 +396,11 @@ public class QAFrameworkPostBuildActionSetup extends PostBuildActionSetup {
             return SourceOption;
         }
 
-        public FormValidation doCheckCMAProjectName(@QueryParameter String CMAProjectName) {
-            if (StringUtils.isBlank(CMAProjectName)) {
+        public FormValidation doCheckCmaProjectName(@QueryParameter String cmaProjectName) {
+            if (StringUtils.isBlank(cmaProjectName)) {
                 return FormValidation.errorWithMarkup("CMA project name should not be empty!");
             }
-            if (!CMAProjectName.matches("^[a-zA-Z0-9_-]+$")) {
+            if (!cmaProjectName.matches("^[a-zA-Z0-9_-]+$")) {
                 return FormValidation.errorWithMarkup("CMA project name is not valid [characters allowed: a-zA-Z0-9-_]");
             }
             return FormValidation.ok();

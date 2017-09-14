@@ -943,6 +943,7 @@ public class PRQANotifier extends Publisher implements Serializable {
                 PRQABuildUtils.normalizeWithEnv(qaFrameworkPostBuildActionSetup.unifiedProjectName, build, listener),
                 qaFrameworkPostBuildActionSetup.enableDependencyMode,
                 qaFrameworkPostBuildActionSetup.performCrossModuleAnalysis,
+                qaFrameworkPostBuildActionSetup.cmaProjectName,
                 qaFrameworkPostBuildActionSetup.reuseCmaDb,
                 qaFrameworkPostBuildActionSetup.useDiskStorage,
                 qaFrameworkPostBuildActionSetup.generateReport,
