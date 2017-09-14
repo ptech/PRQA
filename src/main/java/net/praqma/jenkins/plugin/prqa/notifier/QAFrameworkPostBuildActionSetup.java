@@ -122,7 +122,7 @@ public class QAFrameworkPostBuildActionSetup extends PostBuildActionSetup {
         this.generatePreprocess = generatePreprocess;
         this.assembleSupportAnalytics = assembleSupportAnalytics;
         this.generateReportOnAnalysisError = generateReportOnAnalysisError;
-        this.addBuildNumber=addBuildNumber;
+        this.addBuildNumber = addBuildNumber;
     }
 
     public List<String> getChosenServers() {
