@@ -1046,8 +1046,7 @@ public class PRQANotifier extends Publisher implements Serializable {
     }
 
     private boolean isQafVersionSupported(QaFrameworkVersion qaFrameworkVersion) {
-        outStream.println(String.format("PRQA Source Code Analysis Framework version %s (%s)",
-                qaFrameworkVersion.getQaFrameworkShortVersion(),
+        outStream.println(String.format("PRQA Source Code Analysis Framework version %s",
                 qaFrameworkVersion.getQaFrameworkVersion()));
 
         if (!qaFrameworkVersion.isVersionSupported()) {
