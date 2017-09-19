@@ -61,7 +61,7 @@ import java.util.logging.Logger;
 
 import static hudson.model.Result.*;
 import static java.util.logging.Level.*;
-import static net.praqma.prqa.QaFrameworkVersion.MINOR_SUPPORTED_VERSION;
+import static net.praqma.prqa.QaFrameworkVersion.MINIMUM_SUPPORTED_VERSION;
 import static net.praqma.prqa.reports.ReportType.*;
 
 //TODO: Remove all the deprecated fields in the release for the new PRQA API
@@ -1045,7 +1045,7 @@ public class PRQANotifier extends Publisher implements Serializable {
         if (!qaFrameworkVersion.isVersionSupported()) {
             outStream.println(String.format(
                     "ERROR: In order to use the PRQA plugin please install a version of PRQA·Framework greater or equal to %s!",
-                    MINOR_SUPPORTED_VERSION));
+                    MINIMUM_SUPPORTED_VERSION));
             return false;
         }
         return true;
